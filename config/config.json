@@ -1,0 +1,141 @@
+{
+    "express": {
+        "route": "/api"
+    },
+    "i18n": {
+        "contentPath": "path:./locales",
+        "fallback": "pt-BR"
+    },
+    "specialization": {
+    },
+    "oauth2": {
+        "token": {
+            "expiresIn": 7776000
+        },
+        "refreshToken": {
+            "expiresIn": 31104000
+        }
+    },
+    "middleware": {
+        "static": {
+            "module": {
+                "arguments": [
+                    "path:./.build"
+                ]
+            }
+        },
+        "appsec": {
+            "module": {
+                "arguments": [
+                    {
+                        "p3p": true,
+                        "csp": {
+                            "policy": {
+                                "default-src": "...",
+                                "script-src": "...",
+                                "img-src": "...",
+                                "object-src": "...",
+                                "font-src": "..."
+                            }
+                        },
+                        "nosniff": true,
+                        "xssProtection": true,
+                        "xframe": "SAMEORIGIN"
+                    }
+                ]
+            }
+        },
+        "csrf": {
+            "enabled": true,
+            "priority": 111,
+            "route": "/((?!api))*",
+            "module": {
+                "name": "lusca",
+                "method": "csrf",
+                "arguments": [
+                    {}
+                ]
+            }
+        },
+        "router": {
+            "module": {
+                "arguments": [
+                    {
+                        "index": "path:./controllers",
+                        "directory": "path:./controllers"
+                    }
+                ]
+            }
+        },
+        "cors": {
+            "enabled": true,
+            "priority": 119,
+            "module": {
+                "name": "path:./middlewares/cors"
+            }
+        },
+        "bundle": {
+            "enabled": true,
+            "priority": 119,
+            "module": {
+                "name": "path:./middlewares/bundle"
+            }
+        },
+        "authorize": {
+            "enabled": true,
+            "priority": 119,
+            "module": {
+                "name": "path:./middlewares/authorize"
+            }
+        },
+        "passport": {
+            "enabled": true,
+            "priority": 119,
+            "module": {
+                "name": "path:./middlewares/passport"
+            }
+        },
+        "notFound": {
+            "priority": 130,
+            "enabled": true,
+            "module": {
+                "name": "path:./middlewares/404"
+            }
+        },
+        "error": {
+            "priority": 140,
+            "enabled": true,
+            "module": {
+                "name": "path:./middlewares/error"
+            }
+        },
+        "json": {
+            "enabled": true,
+            "priority": 60,
+            "module": {
+                "name": "body-parser",
+                "method": "json",
+                "arguments": [
+                    {
+                        "limit": 16000000,
+                        "type": "application/json"
+                    }
+                ]
+            }
+        },
+        "fhir": {
+            "enabled": true,
+            "priority": 60,
+            "module": {
+                "name": "body-parser",
+                "method": "json",
+                "arguments": [
+                    {
+                        "limit": 16000000,
+                        "type": "application/fhir+json"
+                    }
+                ]
+            }
+        }
+    }
+}
