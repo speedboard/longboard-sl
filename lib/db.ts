@@ -1,7 +1,7 @@
 import {Db, MongoClient, MongoError} from 'mongodb';
 import {Environment} from '../models/environment';
 import * as querystring from 'querystring';
-import {isNullOrUndefined} from 'util';
+import {format, isNullOrUndefined} from 'util';
 import {Logger} from './logger';
 
 const logger: Logger = new Logger({level: 'debug'});
@@ -27,7 +27,7 @@ function closedDb(): void {
 
 async function configureDb(environment: Environment | string, database: string) {
 
-    logger.log('debug', 'Connected to the database');
+    logger.log('debug', format('Connected to the database: %j', environment));
 
     if (typeof environment === 'string') {
         return connectDb(environment.toString(), database);
