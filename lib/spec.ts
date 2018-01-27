@@ -11,6 +11,8 @@ module.exports = {
         console.log(process.env.DATABASE_NAME);
         database(process.env.DATABASE_URL, process.env.DATABASE_NAME).then(() => {
             next(null, config);
+        }).catch((error: any) => {
+            next(error, config);
         });
     }
 
