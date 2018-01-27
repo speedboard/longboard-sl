@@ -7,11 +7,7 @@ services:
   - mongodb
 
 env:
-  # DATABASE_URL = <token database, dados de acesso ao mongo local>
-  # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
   - DATABASE_URL="mongodb://speedboard:speedboardb@localhost:27017/speedboard?ssl=false&authSource=admin"
-  # DATABASE_NAME = <token database, dados de acesso ao mongo local>
-  # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
   - DATABASE_NAME=speedboard
 
 before_install:
