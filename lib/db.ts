@@ -32,7 +32,7 @@ async function configureDb(environment: Environment | string, database: string) 
     logger.log('debug', format('Connected to the database'));
 
     if (isNullOrUndefined(environment)) {
-        return Promise.reject(new BusinessException(<string>await message('app_could_not_validate_credentials'), 500));
+        throw new BusinessException(<string>await message('app_could_not_validate_credentials'), 500);
     }
 
     if (typeof environment === 'string') {

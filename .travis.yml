@@ -9,10 +9,10 @@ services:
 env:
   # DATABASE_URL = <token database, dados de acesso ao mongo local>
   # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
-  - secure: "EdCboDAWwpcgPqLxEEwaFk3M0zC5dJ2bgFw8MWfcqCfbz7idGKhHcNbkZUSsg53Bbqtkj9dyqrqd+6bIMXiTbj+ycXqKhpY78VxC7gzKqG/az6ILH7Qn7iHPLxA/x7Mxh13v15xf4olacjBRHaDfkkma2KzCYFYZEm3i6ieUC+u6P4hz2dnUQMCQ1+5j5K3dfe3YfhdhZq2jqk7wtFT9jmQppg0VDubW7LFxZsFUH5qITMt29r1Mi2pjqbY++e2HbuTuXFs9rd5Tl2d+gLeBw5nAM4U6ZF69XmRMcblGpsw37rxlDafNUuR13MkPmTrh9iOjhtywcKwvM0lyU0VL5XHjf5dNrJiQeby51xrlAmTtPaj/pHZO6WXgyHDywhYAyET79KcRAh9bzUvDNp+eUOfHJJBoEUoUzmhPtfPU072fxhnLPTsflBBdVqz/XsCor687dm2ga7onIX+BPTf9Ww6kWK1/jvlUthcTl2HwiWn0VtuOdSu+NHu53IUMHOU6UN8NlGAWfQYyrrWEuYV9N2U8I0/vMZCT0RUQhaUYCulfgi5k+CB/KgXPnjLkTtJsnDXOEcwGGjydlFslguaPoE6VMOTNvtvn1xqifOHXJWqELUInX+RIcVHeqUmoGX/H5PZusb7aIeVgOgA2aea2711S5mh6wEJKJjV2LVhKZAA="
-  # DATABASE_URL = <token database, dados de acesso ao mongo local>
+  - DATABASE_URL="mongodb://speedboard:speedboardb@localhost:27017/speedboard?ssl=false&authSource=admin"
+  # DATABASE_NAME = <token database, dados de acesso ao mongo local>
   # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
-  - secure: "TQ/5hifZqIILQyAg6ZvzRhQjq4GoV1O6luWTfkjXLe53jX+TlB08nEbc2Mtb2X/BC7iUmOo2IHO3WOfG8bWYqckOTM+QVnRLEAP1U5RFmzsI+AO2IJzwS2u4N90VuAtsPU9ebYsDukCbaQm2AcTfBcNpFYE1gxU76GbZ3rkT6RFZi1KBV/JNjWdD+mxZyrinTvW+XGPZDHX6DNAvSHaO5/UyBKKiUmlPbCvlrtC2xJ/t/Lc9JPEFaTbSuxmlOA4aiBHGWUc2ZbxrHm1XHvSWQs47Dl36dV1Y/g4r8hOCZcRFt2sJlIpRMWvJIEBnp18924JkmgE1yc38rckmCAUvGhb8eJFHZ1ENFkUo4VpFGEQVl1Jt48IsdGsvmiWilduTdhwO77B9cGM38mzFhe+cXDYadhpTAShAMJn5zvi18Co/AaDQ4kFI4R/rKGOCmYRMCxUKJCewaHxf1kkrxd4istc90kd7anjEljpTgEvjZ+7140FhjYzj5HKgtdRxNRxGNWs7RgrJ1B8YgSaYraFj0mxPE00EocGXdExDVq0RirUn9fxe4ddGFU09OWdD+gJrqdmJxZPlNbnhNk5tNiFpvsZicY5Eno+hqJAPywZ3bFfhCIouMssHMWweVT1CBF3WEDi8M1ZnuBqkPii79yj/laNFifL51snP0oz++MgWD7Y="
+  - DATABASE_NAME=speedboard
 
 before_install:
   - npm install -g greenkeeper-lockfile@1
