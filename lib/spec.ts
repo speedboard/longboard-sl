@@ -7,7 +7,9 @@ module.exports = {
     onconfig: (config: any, next: any) => {
         rsa(config.get('rsa'));
         message(config.get('i18n'));
-        database(config.get('database') || process.env.DATABASE_URL, process.env.DATABASE_NAME).then(() => {
+        console.log(process.env.DATABASE_URL);
+        console.log(process.env.DATABASE_NAME);
+        database(process.env.DATABASE_URL, process.env.DATABASE_NAME).then(() => {
             next(null, config);
         });
     }

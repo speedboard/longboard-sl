@@ -1,8 +1,6 @@
 import {BusinessException} from '../errors/business-exception';
 import {Db, MongoClient, MongoError} from 'mongodb';
-import {Environment} from '../models/environment';
 import {format, isNullOrUndefined} from 'util';
-import * as querystring from 'querystring';
 import {message} from './message';
 import {Logger} from './logger';
 
@@ -27,7 +25,7 @@ function closedDb(): void {
     }
 }
 
-async function configureDb(environment: Environment | string, database: string) {
+async function configureDb(environment: string, database: string) {
 
     logger.log('debug', format('Connected to the database'));
 
@@ -35,23 +33,7 @@ async function configureDb(environment: Environment | string, database: string) 
         throw new BusinessException(<string>await message('app_could_not_validate_credentials'), 500);
     }
 
-    if (typeof environment === 'string') {
-        return connectDb(environment.toString(), database);
-    }
-
-    const options = querystring.stringify(environment.options);
-
-    let url = 'mongodb://'.concat(
-        encodeURIComponent(environment.user), ':',
-        encodeURIComponent(environment.password), '@',
-        environment.hosts.join(',')
-    );
-
-    if (options) {
-        url = url.concat('?', options);
-    }
-
-    return connectDb(url, environment.datasource, environment.loggerLevel);
+    return connectDb(environment.toString(), database);
 
 }
 
@@ -73,7 +55,7 @@ async function connectDb(url: string, database: string, loggerLevel?: string) {
 }
 
 module.exports = function () {
-    return (environment: Environment | string, database: string) => {
+    return (environment: string, database: string) => {
         return configureDb(environment, database);
     }
 };
