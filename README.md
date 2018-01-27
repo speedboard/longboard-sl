@@ -1,8 +1,8 @@
 Longboard for SpeedBoard
 =========================================
-[![Greenkeeper badge](https://badges.greenkeeper.io/speedboard/longboard.svg)](https://greenkeeper.io/)
-                         [![Build Status](https://secure.travis-ci.org/speedboard/longboard.png)](http://travis-ci.org/speedboard/longboard)
-                         [![Coverage Status](https://coveralls.io/repos/github/speedboard/longboard/badge.svg)](https://coveralls.io/github/speedboard/longboard)
+[![Greenkeeper badge](https://badges.greenkeeper.io/speedboard/longboard-sl.svg)](https://greenkeeper.io/)
+                         [![Build Status](https://secure.travis-ci.org/speedboard/longboard-sl.png)](http://travis-ci.org/speedboard/longboard-sl)
+                         [![Coverage Status](https://coveralls.io/repos/github/speedboard/longboard-sl/badge.svg)](https://coveralls.io/github/speedboard/longboard-sl)
                          
 An open source development platform with flexible hardware and Internet of Things (IoT), with automation engine operations and public APIs for data management  with Raspbaery PI.
 

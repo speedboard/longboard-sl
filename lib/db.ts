@@ -1,7 +1,8 @@
+import {BusinessException} from '../errors/business-exception';
 import {Db, MongoClient, MongoError} from 'mongodb';
 import {Environment} from '../models/environment';
-import * as querystring from 'querystring';
 import {format, isNullOrUndefined} from 'util';
+import * as querystring from 'querystring';
 import {Logger} from './logger';
 
 const logger: Logger = new Logger({level: 'debug'});
@@ -27,7 +28,11 @@ function closedDb(): void {
 
 async function configureDb(environment: Environment | string, database: string) {
 
-    logger.log('debug', format('Connected to the database: %j', environment));
+    logger.log('debug', format('Connected to the database'));
+
+    if (isNullOrUndefined(environment)) {
+        return Promise.reject(new BusinessException(await message('app_could_not_validate_credentials'), 500));
+    }
 
     if (typeof environment === 'string') {
         return connectDb(environment.toString(), database);
