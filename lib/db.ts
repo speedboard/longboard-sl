@@ -3,6 +3,7 @@ import {Db, MongoClient, MongoError} from 'mongodb';
 import {Environment} from '../models/environment';
 import {format, isNullOrUndefined} from 'util';
 import * as querystring from 'querystring';
+import {message} from './message';
 import {Logger} from './logger';
 
 const logger: Logger = new Logger({level: 'debug'});
@@ -31,7 +32,7 @@ async function configureDb(environment: Environment | string, database: string) 
     logger.log('debug', format('Connected to the database'));
 
     if (isNullOrUndefined(environment)) {
-        return Promise.reject(new BusinessException(await message('app_could_not_validate_credentials'), 500));
+        return Promise.reject(new BusinessException(<string>await message('app_could_not_validate_credentials'), 500));
     }
 
     if (typeof environment === 'string') {
