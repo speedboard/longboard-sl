@@ -7,8 +7,7 @@ services:
   - mongodb
 
 env:
-  - DATABASE_URL="mongodb://speedboard:speedboardb@localhost:27017/speedboard?ssl=false&authSource=admin"
-  - DATABASE_NAME=speedboard
+  - DATABASE_URL="mongodb://speedboard:speedboardb@localhost:27017/speedboard?ssl=false&authSource=admin" DATABASE_NAME=speedboard
 
 before_install:
   - npm install -g greenkeeper-lockfile@1
