@@ -7,7 +7,7 @@ services:
   - mongodb
 
 env:
-  - DATABASE_URL="mongodb://speedboard:speedboardb@localhost:27017/speedboard?ssl=false&authSource=admin" DATABASE_NAME=speedboard
+  secure: "ojgPMCyxwpkjTADRSXwqJQSBdFzDcLEjpE816Bt8R1n3/68TlifEtQRdULUr4m8t2h2Xwc2+ptCLu5rqajdZu2DuPc9f7TiUH/WoordV9JObty5VPDi2Qw4Dawszu0HTq+XcHDZZtEIVHtfBibZdcEZI1iW9jxd/M+AbBGr2QwTPUGGqsBtlNBLtZ4CxV0u8Gturiw41JLIVeuSOdBPQUSahuhzkPSBXG7AVrThBPreHd9vWHY3/ahDthupnHw8DkBTiUvzNlG6zwWuaA6DbVuibzA5nWVAukPuaoGTye//YagDoEU2+0GGtqA819HkhhM/3RbcZ9gZN3MUY92TelVw2MzuGNcKTj/SsesgAqST1GJRYNLflF7NQlmdF5zrxwzMbD+JX7lRcQ03qp87DC3QCS3M8DDgENKpxzsWUJuYgN65n5qD0P4p8ZmFoZ0cVFrkyfbci5bK4d5ZLstr04Jw6/9Fdz5fQRQdbIaP2AMWiECYryZkxa3sUhCNT2s+bL0IFHASYCjIRpyEK4PDfH1Saf47Db7dpy9vWXM0hdRAoVpa1+dFqChxHVvJKDrFmxIoXcil9/Pp3JHNsb8uywfKwfl3mwBLp7z2ZPQ6a+T6RZJS5CWoQymc/kECWAsJe+jeRMDfrkob71eMOeZ92Rq0q/5BMPqpC+gCuwjFIZX8="
 
 before_install:
   - npm install -g greenkeeper-lockfile@1
