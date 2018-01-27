@@ -1,21 +1,29 @@
 language: node_js
 
 node_js:
-  - '8'
+  - '8.9.1'
 
 services:
   - mongodb
 
+env:
+  global:
+    # DATABASE_URL = <token database, dados de acesso ao mongo local>
+    # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
+    - secure: "EdCboDAWwpcgPqLxEEwaFk3M0zC5dJ2bgFw8MWfcqCfbz7idGKhHcNbkZUSsg53Bbqtkj9dyqrqd+6bIMXiTbj+ycXqKhpY78VxC7gzKqG/az6ILH7Qn7iHPLxA/x7Mxh13v15xf4olacjBRHaDfkkma2KzCYFYZEm3i6ieUC+u6P4hz2dnUQMCQ1+5j5K3dfe3YfhdhZq2jqk7wtFT9jmQppg0VDubW7LFxZsFUH5qITMt29r1Mi2pjqbY++e2HbuTuXFs9rd5Tl2d+gLeBw5nAM4U6ZF69XmRMcblGpsw37rxlDafNUuR13MkPmTrh9iOjhtywcKwvM0lyU0VL5XHjf5dNrJiQeby51xrlAmTtPaj/pHZO6WXgyHDywhYAyET79KcRAh9bzUvDNp+eUOfHJJBoEUoUzmhPtfPU072fxhnLPTsflBBdVqz/XsCor687dm2ga7onIX+BPTf9Ww6kWK1/jvlUthcTl2HwiWn0VtuOdSu+NHu53IUMHOU6UN8NlGAWfQYyrrWEuYV9N2U8I0/vMZCT0RUQhaUYCulfgi5k+CB/KgXPnjLkTtJsnDXOEcwGGjydlFslguaPoE6VMOTNvtvn1xqifOHXJWqELUInX+RIcVHeqUmoGX/H5PZusb7aIeVgOgA2aea2711S5mh6wEJKJjV2LVhKZAA="
+    # DATABASE_URL = <token database, dados de acesso ao mongo local>
+    # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
+    - secure: "TQ/5hifZqIILQyAg6ZvzRhQjq4GoV1O6luWTfkjXLe53jX+TlB08nEbc2Mtb2X/BC7iUmOo2IHO3WOfG8bWYqckOTM+QVnRLEAP1U5RFmzsI+AO2IJzwS2u4N90VuAtsPU9ebYsDukCbaQm2AcTfBcNpFYE1gxU76GbZ3rkT6RFZi1KBV/JNjWdD+mxZyrinTvW+XGPZDHX6DNAvSHaO5/UyBKKiUmlPbCvlrtC2xJ/t/Lc9JPEFaTbSuxmlOA4aiBHGWUc2ZbxrHm1XHvSWQs47Dl36dV1Y/g4r8hOCZcRFt2sJlIpRMWvJIEBnp18924JkmgE1yc38rckmCAUvGhb8eJFHZ1ENFkUo4VpFGEQVl1Jt48IsdGsvmiWilduTdhwO77B9cGM38mzFhe+cXDYadhpTAShAMJn5zvi18Co/AaDQ4kFI4R/rKGOCmYRMCxUKJCewaHxf1kkrxd4istc90kd7anjEljpTgEvjZ+7140FhjYzj5HKgtdRxNRxGNWs7RgrJ1B8YgSaYraFj0mxPE00EocGXdExDVq0RirUn9fxe4ddGFU09OWdD+gJrqdmJxZPlNbnhNk5tNiFpvsZicY5Eno+hqJAPywZ3bFfhCIouMssHMWweVT1CBF3WEDi8M1ZnuBqkPii79yj/laNFifL51snP0oz++MgWD7Y="
+
 before_install:
-  - '[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest' # skipped when using node 9
   - npm install -g greenkeeper-lockfile@1
   - openssl genrsa 4096 -aes256 > longboard.pem
   - openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt
   - openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem
-  - mongo longboard --eval 'db.createUser({user:"longboard", pwd:"longboard", roles:["readWrite"]});'
+  - mongo speedboard --eval 'db.createUser({user:"speedboard", pwd:"speedboard", roles:["readWrite"]});'
+  - mongo speedboard --eval 'db.users.insert({ "email":"eu@iqueiroz.com.br", "login":"ismael.queiroz", "password":"123456", "name":"Ismael", "surname":"Queiroz", "roles":["app:dashboard"], "state":1, "created":"2017-10-17T13:23:44.804-0300"});'
 
 before_script:
-  - mongo longboard --eval 'db.users.insert({ "email":"eu@iqueiroz.com.br", "login":"ismael.queiroz", "password":"123456", "name":"Ismael", "surname":"Queiroz", "roles":["app:dashboard"], "state":1, "created":"2017-10-17T13:23:44.804-0300"});'
   - greenkeeper-lockfile-update
 
 after_script:
@@ -27,12 +35,6 @@ after_success:
 cache:
   directories:
     - node_modules
-
-env:
-  global:
-    # DATABASE_URL = <token database, dados de acesso ao mongo local>
-    # Isso é necessário para que a tarefa do Travis consiga testar os serviços com acesso a baco
-    - secure: "EdCboDAWwpcgPqLxEEwaFk3M0zC5dJ2bgFw8MWfcqCfbz7idGKhHcNbkZUSsg53Bbqtkj9dyqrqd+6bIMXiTbj+ycXqKhpY78VxC7gzKqG/az6ILH7Qn7iHPLxA/x7Mxh13v15xf4olacjBRHaDfkkma2KzCYFYZEm3i6ieUC+u6P4hz2dnUQMCQ1+5j5K3dfe3YfhdhZq2jqk7wtFT9jmQppg0VDubW7LFxZsFUH5qITMt29r1Mi2pjqbY++e2HbuTuXFs9rd5Tl2d+gLeBw5nAM4U6ZF69XmRMcblGpsw37rxlDafNUuR13MkPmTrh9iOjhtywcKwvM0lyU0VL5XHjf5dNrJiQeby51xrlAmTtPaj/pHZO6WXgyHDywhYAyET79KcRAh9bzUvDNp+eUOfHJJBoEUoUzmhPtfPU072fxhnLPTsflBBdVqz/XsCor687dm2ga7onIX+BPTf9Ww6kWK1/jvlUthcTl2HwiWn0VtuOdSu+NHu53IUMHOU6UN8NlGAWfQYyrrWEuYV9N2U8I0/vMZCT0RUQhaUYCulfgi5k+CB/KgXPnjLkTtJsnDXOEcwGGjydlFslguaPoE6VMOTNvtvn1xqifOHXJWqELUInX+RIcVHeqUmoGX/H5PZusb7aIeVgOgA2aea2711S5mh6wEJKJjV2LVhKZAA="
 
 notifications:
   email:
