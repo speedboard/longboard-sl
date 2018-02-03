@@ -1,0 +1,18 @@
+version: 0.1
+
+phases:
+  install:
+    commands:
+      - printenv
+      - npm install
+  build:
+    commands:
+      - npm test
+  post_build:
+    commands:
+      - npm run coverage
+
+artifacts:
+  files:
+    - coverage*/**
+  discard-paths: yes
