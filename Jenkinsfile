@@ -1,14 +1,19 @@
 #!/usr/bin/env groovy
 pipeline {
+    agent {
+        docker {
+            image 'node:alpine'
+        }
+    }
     stages {
-        docker.image("node:alpine").inside {
-            stages {
-                stage('Build') {
-                    steps { sh 'npm i' }
-                }
-                stage('Test') {
-                    steps { sh 'npm test' }
-                }
+        stage('Build') {
+            steps {
+                sh 'npm i'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
             }
         }
     }
