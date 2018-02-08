@@ -1,14 +1,14 @@
-node('testing') {
+#!/usr/bin/env groovy
+pipeline {
+
     agent {
         docker {
             image 'node:alpine'
+            args '-u root'
         }
     }
 
     stages {
-        stage("Checkout") {
-            checkout scm
-        }
         stage('Build') {
             steps {
                 sh 'npm i'
@@ -20,4 +20,5 @@ node('testing') {
             }
         }
     }
+
 }
