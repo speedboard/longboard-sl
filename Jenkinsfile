@@ -23,9 +23,9 @@
 //        }
 //    }
 //}
-node('testing') {
+node {
     machine()
-    checkout()
+    //checkout()
     build()
     test()
 }
