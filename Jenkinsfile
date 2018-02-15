@@ -14,10 +14,7 @@ pipeline {
         stage('Setup') {
             steps {
                 sh 'apk add --no-cache \'su-exec>=0.2\''
-                sh 'apk add --update --no-cache curl'
-                sh 'apk add --update --no-cache git;'
                 sh 'apk add --update --no-cache openssh'
-                sh 'apk add --update --no-cache python'
             }
         }
         stage('Cert') {
