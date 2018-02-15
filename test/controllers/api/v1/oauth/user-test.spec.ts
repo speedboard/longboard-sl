@@ -80,8 +80,8 @@ describe('UserService API V1', function () {
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .send(
                 {
-                    username: user.login,
-                    password: user.login,
+                    username: user.email,
+                    password: user.email,
                     grant_type: 'password'
                 }
             ).expect(401)
@@ -95,7 +95,7 @@ describe('UserService API V1', function () {
             .set('Content-Type', 'application/x-www-form-urlencoded')
             .send(
                 {
-                    username: user.login,
+                    username: user.email,
                     password: '',
                     grant_type: 'password'
                 }
@@ -106,4 +106,3 @@ describe('UserService API V1', function () {
     });
 
 });
-
