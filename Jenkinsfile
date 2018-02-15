@@ -10,7 +10,7 @@ node {
 
 def checkout() {
     stage("Checkout") {
-        checkout 'scm'
+        checkout(scm)
     }
 }
 
