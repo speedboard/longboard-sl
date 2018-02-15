@@ -1,5 +1,4 @@
 import {BusinessErrorException} from '../errors/business-error-exception';
-import {BusinessException} from '../errors/business-exception';
 import {Credential} from '../models/credential';
 import {sign, SignOptions} from 'jsonwebtoken';
 import {BaseService} from './base.service';
@@ -7,7 +6,7 @@ import {Payload} from '../models/payload';
 import {isNullOrUndefined} from 'util';
 import {privateKey} from '../lib/rsa';
 import {User} from '../models/user';
-import {Db} from 'mongodb';
+import {Db, InsertOneWriteOpResult} from 'mongodb';
 
 export class UserService extends BaseService {
 
@@ -15,6 +14,24 @@ export class UserService extends BaseService {
 
     constructor(private db: Db) {
         super(db.collection(UserService.COLLECTION_NAME));
+    }
+
+    async create(user: User): Promise<User> {
+
+        this.logger.log('info', await this.resource.message('app_validating_user_credentials', user));
+
+        return this.collection.insertOne(user).then(async (result: InsertOneWriteOpResult) => {
+
+            if (isNullOrUndefined(result)) {
+                throw new BusinessErrorException(await this.resource.message('app_could_not_validate_credentials'), 401);
+            }
+
+            return this.collection.findOne({
+                '_id': result.insertedId
+            });
+
+        });
+
     }
 
     async authenticate(credential: Credential): Promise<User> {
