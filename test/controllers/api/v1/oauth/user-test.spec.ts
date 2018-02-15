@@ -47,6 +47,7 @@ describe('UserService API V1', function () {
                     login: v4(),
                     email: v4(),
                     password: v4(),
+                    state: 1
                 }
             )
             .expect(200)
