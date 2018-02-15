@@ -3,6 +3,7 @@ pipeline {
     agent {
         docker {
             image 'node:alpine'
+            args '-u root'
         }
     }
     environment {
