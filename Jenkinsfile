@@ -3,6 +3,7 @@ pipeline {
     agent {
         docker {
             image 'node:alpine'
+            args '-u root'
         }
     }
     environment {
@@ -17,8 +18,8 @@ pipeline {
         }
         stage('Setup') {
             steps {
-                sh 'sudo apk add --no-cache \'su-exec>=0.2\''
-                sh 'sudo apk add --update --no-cache openssl'
+                sh 'apk add --no-cache \'su-exec>=0.2\''
+                sh 'apk add --update --no-cache openssl'
             }
         }
         stage('Cert') {
