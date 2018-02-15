@@ -16,6 +16,12 @@ pipeline {
                 sh 'sudo apk add --update --no-cache openssl'
             }
         }
+        stage('Setup') {
+            steps {
+                sh 'sudo apk add --no-cache \'su-exec>=0.2\''
+                sh 'sudo apk add --update --no-cache openssl'
+            }
+        }
         stage('Cert') {
             steps {
                 sh 'openssl genrsa 4096 -aes256 > longboard.pem'
@@ -32,6 +38,11 @@ pipeline {
             steps {
                 sh 'npm test'
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
