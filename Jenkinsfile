@@ -1,19 +1,15 @@
 #!/usr/bin/env groovy
 pipeline {
-    stage('Services') {
-        agent {
-            docker {
-                image 'node:mongo'
-            }
-        }
-        steps {
-            sh 'mongo speedboard --eval \'db.createUser({user:"speedboard", pwd:"speedboard", roles:["readWrite"]});\''
-            sh 'mongo speedboard --eval \'db.users.insert({ "email":"eu@iqueiroz.com.br", "login":"ismael.queiroz", "password":"123456", "name":"Ismael", "surname":"Queiroz", "roles":["app:dashboard"], "state":1, "created":"2017-10-17T13:23:44.804-0300"});\''
-        }
+    environment {
+        DATABASE_URL = 'mongodb://db:27017/speedboard'
+        DATABASE_NAME = 'speedboard'
     }
     agent {
-        docker {
-            image 'node:alpine'
+        docker.image('node:mongo') { m ->
+            docker.image('node:alpine').inside("--link ${m.id}:db") {
+                sh 'mongo --host db speedboard --eval \'db.createUser({user:"speedboard", pwd:"speedboard", roles:["readWrite"]});\''
+                sh 'mongo --host db speedboard --eval \'db.users.insert({ "email":"eu@iqueiroz.com.br", "login":"ismael.queiroz", "password":"123456", "name":"Ismael", "surname":"Queiroz", "roles":["app:dashboard"], "state":1, "created":"2017-10-17T13:23:44.804-0300"});\''
+            }
         }
     }
     stages {
