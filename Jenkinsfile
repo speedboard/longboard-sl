@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-node("docker") {
+node {
     environment {
         DATABASE_URL = 'mongodb://db:27017/speedboard'
         DATABASE_NAME = 'speedboard'
