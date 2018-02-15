@@ -11,11 +11,6 @@ pipeline {
         DATABASE_NAME = 'speedboard'
     }
     stages {
-        stage('Checkout Code') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Setup') {
             steps {
                 sh 'apk add --no-cache \'su-exec>=0.2\''
