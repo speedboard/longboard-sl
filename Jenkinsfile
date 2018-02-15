@@ -12,6 +12,15 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
+                sh 'apk add --no-cache \'su-exec>=0.2\''
+                sh 'apk add --update --no-cache curl'
+                sh 'apk add --update --no-cache git;'
+                sh 'apk add --update --no-cache openssh'
+                sh 'apk add --update --no-cache python'
+            }
+        }
+        stage('Cert') {
+            steps {
                 sh 'openssl genrsa 4096 -aes256 > longboard.pem'
                 sh 'openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt'
                 sh 'openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem'
