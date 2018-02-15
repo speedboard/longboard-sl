@@ -106,4 +106,3 @@ describe('UserService API V1', function () {
     });
 
 });
-
