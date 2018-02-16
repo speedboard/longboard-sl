@@ -80,7 +80,7 @@ pipeline {
 //        }
         stage('Code analysis') {
             steps {
-                def scannerHome = tool 'SonarQube Scanner 2.8'
+                def scannerHome = tool 'sonarScanner';
                 withSonarQubeEnv('SonarQube') {
                     sh("${scannerHome}/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
@@ -90,6 +90,7 @@ pipeline {
                         "-Dsonar.projectVersion=1.0.0-alpha.1 " +
                         "-Dsonar.branch=${env.BRANCH_NAME} " +
                         "-Dsonar.sources=. " +
+                        "-Dsonar.language=js" +
                         "-Dsonar.sourceEncoding=UTF-8 " +
                         "-Dsonar.tests=. "
                     )
