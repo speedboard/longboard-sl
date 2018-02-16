@@ -6,9 +6,14 @@ pipeline {
             args '-u root'
         }
     }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '2'))
+    }
     environment {
         DATABASE_URL = 'mongodb://172.17.0.1:27017/speedboard'
         DATABASE_NAME = 'speedboard'
+        CI = true
+        COVERALLS_REPO_TOKEN = MBPC4n8OcT8P66zSMMtZwFIeSvhhK1OOQu5HZ
     }
     stages {
         stage('Setup') {
@@ -31,7 +36,27 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'npm test'
+                parallel(
+                    test: {
+                        sh 'npm test'
+                    },
+                    coverage: {
+                        sh 'npm run coverage'
+                    }
+                )
+            }
+            post {
+                success {
+                    publishHTML target: [
+                        allowMissing         : false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll              : true,
+                        reportDir            : 'coverage',
+                        reportFiles          : 'index.html',
+                        reportName           : 'RCov Report',
+                        reportTitles         : 'Coverage'
+                    ]
+                }
             }
         }
     }
