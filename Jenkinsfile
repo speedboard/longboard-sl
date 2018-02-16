@@ -10,10 +10,10 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '2'))
     }
     environment {
+        COVERALLS_REPO_TOKEN = 'MBPC4n8OcT8P66zSMMtZwFIeSvhhK1OOQu5HZ'
         DATABASE_URL = 'mongodb://172.17.0.1:27017/speedboard'
         DATABASE_NAME = 'speedboard'
         CI = true
-        COVERALLS_REPO_TOKEN = MBPC4n8OcT8P66zSMMtZwFIeSvhhK1OOQu5HZ
     }
     stages {
         stage('Setup') {
