@@ -46,8 +46,11 @@ pipeline {
                         sh 'npm run coverage'
                     },
                     sonar: {
+                        script {
+                            scannerHome = tool 'SonarQube Scanner 2.8'
+                        }
                         withSonarQubeEnv('SonarQube') {
-                            sh("sonar-scanner " +
+                            sh("${scannerHome}/bin/sonar-scanner " +
                                 "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                                 "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
                                 "-Dsonar.projectKey=longboard " +
@@ -79,7 +82,14 @@ pipeline {
         }
         stage("Code quality") {
             steps {
-                waitForQualityGate()
+                script {
+                    timeout(time: 1, unit: "HOURS") {
+                        def qg = waitForQualityGate()
+                        if (qg.status != "OK") {
+                            error("Pipeline aborted due to quality gate failure: ${qg.status}")
+                        }
+                    }
+                }
             }
         }
     }
