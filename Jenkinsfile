@@ -36,12 +36,31 @@ pipeline {
         }
         stage('Test') {
             steps {
+                sh 'npm test'
+            }
+        }
+        stage('Code analysis') {
+            steps {
                 parallel(
-                    test: {
-                        sh 'npm test'
-                    },
                     coverage: {
                         sh 'npm run coverage'
+                    },
+                    sonar: {
+                        def scannerHome = tool 'SonarQube Scanner 2.8'
+                        withSonarQubeEnv('SonarQube') {
+                            sh("${scannerHome}/bin/sonar-scanner " +
+                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                                "-Dsonar.projectKey=longboard " +
+                                "-Dsonar.projectName=longboard-sl " +
+                                "-Dsonar.projectVersion=1.0.0-alpha.1 " +
+                                "-Dsonar.branch=${env.BRANCH_NAME} " +
+                                "-Dsonar.sources=. " +
+                                "-Dsonar.sourceEncoding=UTF-8 " +
+                                "-Dsonar.tests=. "
+                            )
+                        }
+
                     }
                 )
             }
@@ -56,6 +75,16 @@ pipeline {
                         reportName           : 'RCov Report',
                         reportTitles         : 'Coverage'
                     ]
+                }
+            }
+        }
+        stage("Code quality") {
+            steps {
+                timeout(time: 1, unit: "HOURS") {
+                    def qg = waitForQualityGate()
+                    if (qg.status != "OK") {
+                        error("Pipeline aborted due to quality gate failure: ${qg.status}")
+                    }
                 }
             }
         }
