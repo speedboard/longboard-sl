@@ -39,30 +39,62 @@ pipeline {
                 sh 'npm test'
             }
         }
+//        stage('Code analysis') {
+//            steps {
+//                parallel(
+//                    coverage: {
+//                        sh 'npm run coverage'
+//                    },
+//                    sonar: {
+//                        def scannerHome = tool 'SonarQube Scanner 2.8'
+//                        withSonarQubeEnv('SonarQube') {
+//                            sh("${scannerHome}/bin/sonar-scanner " +
+//                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                                "-Dsonar.projectKey=longboard " +
+//                                "-Dsonar.projectName=longboard-sl " +
+//                                "-Dsonar.projectVersion=1.0.0-alpha.1 " +
+//                                "-Dsonar.branch=${env.BRANCH_NAME} " +
+//                                "-Dsonar.sources=. " +
+//                                "-Dsonar.sourceEncoding=UTF-8 " +
+//                                "-Dsonar.tests=. "
+//                            )
+//                        }
+//
+//                    }
+//                )
+//            }
+//            post {
+//                success {
+//                    publishHTML target: [
+//                        allowMissing         : false,
+//                        alwaysLinkToLastBuild: false,
+//                        keepAll              : true,
+//                        reportDir            : 'coverage',
+//                        reportFiles          : 'index.html',
+//                        reportName           : 'RCov Report',
+//                        reportTitles         : 'Coverage'
+//                    ]
+//                }
+//            }
+//        }
         stage('Code analysis') {
-            node {
-                parallel(
-                    coverage: {
-                        sh 'npm run coverage'
-                    },
-                    sonar: {
-                        def scannerHome = tool 'SonarQube Scanner 2.8'
-                        withSonarQubeEnv('SonarQube') {
-                            sh("${scannerHome}/bin/sonar-scanner " +
-                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                                "-Dsonar.projectKey=longboard " +
-                                "-Dsonar.projectName=longboard-sl " +
-                                "-Dsonar.projectVersion=1.0.0-alpha.1 " +
-                                "-Dsonar.branch=${env.BRANCH_NAME} " +
-                                "-Dsonar.sources=. " +
-                                "-Dsonar.sourceEncoding=UTF-8 " +
-                                "-Dsonar.tests=. "
-                            )
-                        }
+            steps {
+                def scannerHome = tool 'SonarQube Scanner 2.8'
+                withSonarQubeEnv('SonarQube') {
+                    sh("${scannerHome}/bin/sonar-scanner " +
+                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                        "-Dsonar.projectKey=longboard " +
+                        "-Dsonar.projectName=longboard-sl " +
+                        "-Dsonar.projectVersion=1.0.0-alpha.1 " +
+                        "-Dsonar.branch=${env.BRANCH_NAME} " +
+                        "-Dsonar.sources=. " +
+                        "-Dsonar.sourceEncoding=UTF-8 " +
+                        "-Dsonar.tests=. "
+                    )
+                }
 
-                    }
-                )
             }
             post {
                 success {
