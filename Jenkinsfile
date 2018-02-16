@@ -53,15 +53,18 @@ pipeline {
                             sh("${scannerHome}/bin/sonar-scanner " +
                                 "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                                 "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                                "-Dsonar.projectKey=longboard " +
-                                "-Dsonar.projectName=longboard-sl " +
+
                                 "-Dsonar.projectVersion=1.0.0-alpha.1 " +
+                                "-Dsonar.projectName=longboard-sl " +
+                                "-Dsonar.projectKey=longboard " +
+
                                 "-Dsonar.branch=${env.BRANCH_NAME} " +
+
                                 "-Dsonar.sources=. " +
                                 "-Dsonar.sourceEncoding=UTF-8 " +
-                                "-Dsonar.exclusions=**/node_modules/**,**/*.js " +
                                 "-Dsonar.test.inclusions=**/*.spec.ts " +
-                                "-Dsonar.ts.coverage.lcovReportPath=coverage/lcov.info",
+                                "-Dsonar.exclusions=**/node_modules/**,**/*.js " +
+                                "-Dsonar.ts.coverage.lcovReportPath=coverage/lcov.info" +
                                 "-Dsonar.typescript.lcov.reportPaths=coverage/lcov.info"
                             )
                         }
