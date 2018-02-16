@@ -23,7 +23,8 @@
         "reporter": [
             "html",
             "text",
-            "cobertura"
+            "lcov",
+            "text-lcov"
         ],
         "all": true,
         "cache": false,
