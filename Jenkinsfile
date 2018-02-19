@@ -60,10 +60,13 @@ pipeline {
         stage("Code analysis") {
             steps {
                 script {
-                    scannerHome = tool "SonarQube"
+                    scannerHome = tool "SonarScanner"
                 }
+
+                sh "export PATH=${scannerHome}/bin:$PATH"
+
                 withSonarQubeEnv("SonarQube") {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh "sonar-scanner"
                 }
             }
         }
