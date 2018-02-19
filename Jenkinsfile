@@ -50,6 +50,7 @@ pipeline {
                             scannerHome = tool 'SonarQube'
                         }
                         withSonarQubeEnv('SonarQube') {
+                            sh("pwd")
                             sh("${scannerHome}/bin/sonar-scanner")
                         }
 //                        script {
