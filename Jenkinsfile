@@ -49,24 +49,26 @@ pipeline {
 //                        script {
 //                            scannerHome = tool 'SonarQube'
 //                        }
-                        withSonarQubeEnv('SonarQube') {
-                            docker.image("swids/sonar-scanner:2.8").inside() {
-                                sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                                    "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                                    "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                        script {
+                            withSonarQubeEnv('SonarQube') {
+                                docker.image("swids/sonar-scanner:2.8").inside() {
+                                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
 
-                                    "-Dsonar.projectVersion=1.0.0-alpha.1 " +
-                                    "-Dsonar.projectName=longboard-sl " +
-                                    "-Dsonar.projectKey=longboard " +
+                                        "-Dsonar.projectVersion=1.0.0-alpha.1 " +
+                                        "-Dsonar.projectName=longboard-sl " +
+                                        "-Dsonar.projectKey=longboard " +
 
-                                    "-Dsonar.branch=${env.BRANCH_NAME} " +
+                                        "-Dsonar.branch=${env.BRANCH_NAME} " +
 
-                                    "-Dsonar.sources=. " +
-                                    "-Dsonar.sourceEncoding=UTF-8 " +
-                                    "-Dsonar.test.inclusions=**/*.spec.ts " +
-                                    "-Dsonar.exclusions=**/node_modules/**,**/*.js " +
-                                    "-Dsonar.ts.coverage.lcovReportPath=coverage/lcov.info" +
-                                    "-Dsonar.typescript.lcov.reportPaths=coverage/lcov.info")
+                                        "-Dsonar.sources=. " +
+                                        "-Dsonar.sourceEncoding=UTF-8 " +
+                                        "-Dsonar.test.inclusions=**/*.spec.ts " +
+                                        "-Dsonar.exclusions=**/node_modules/**,**/*.js " +
+                                        "-Dsonar.ts.coverage.lcovReportPath=coverage/lcov.info" +
+                                        "-Dsonar.typescript.lcov.reportPaths=coverage/lcov.info")
+                                }
                             }
                         }
 //                        sh("${scannerHome}/bin/sonar-scanner " +
