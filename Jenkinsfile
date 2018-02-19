@@ -2,59 +2,58 @@
 pipeline {
     agent {
         docker {
-            image 'node:alpine'
-            args '-u root'
+            image "node:alpine"
+            args "-u root"
         }
     }
     options {
-        buildDiscarder(logRotator(numToKeepStr: '2'))
+        buildDiscarder(logRotator(numToKeepStr: "2"))
     }
     environment {
-        COVERALLS_REPO_TOKEN = 'oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC'
-        DATABASE_URL = 'mongodb://172.17.0.1:27017/speedboard'
-        DATABASE_NAME = 'speedboard'
+        COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
+        DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
+        DATABASE_NAME = "speedboard"
         CI = true
     }
     stages {
-        stage('Setup') {
+        stage("Setup") {
             steps {
-                sh 'apk add --no-cache \'su-exec>=0.2\''
-                sh 'apk add --update --no-cache openssl'
+                sh "apk add --no-cache \"su-exec>=0.2\""
+                sh "apk add --update --no-cache openssl"
             }
         }
-        stage('Cert') {
+        stage("Cert") {
             steps {
-                sh 'openssl genrsa 4096 -aes256 > longboard.pem'
-                sh 'openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt'
-                sh 'openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem'
+                sh "openssl genrsa 4096 -aes256 > longboard.pem"
+                sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
+                sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
             }
         }
-        stage('Build') {
+        stage("Build") {
             steps {
-                sh 'npm i'
+                sh "npm i"
             }
         }
-        stage('Test') {
+        stage("Test") {
             steps {
-                sh 'npm test'
+                sh "npm test"
             }
         }
-        stage('Code analysis') {
+        stage("Code analysis") {
             steps {
                 parallel(
                     coverage: {
-                        sh 'npm run coverage'
+                        sh "npm run coverage"
                     },
                     sonar: {
                         script {
-                            scannerHome = tool 'SonarQube'
-
-                            withSonarQubeEnv('SonarQube') {
-                                sh("${scannerHome}/bin/sonar-scanner")
-                            }
+                            scannerHome = tool "SonarQube"
+                        }
+                        withSonarQubeEnv("SonarQube") {
+                            sh "${scannerHome}/bin/sonar-scanner"
                         }
 //                        script {
-//                            withSonarQubeEnv('SonarQube') {
+//                            withSonarQubeEnv("SonarQube") {
 //                                docker.image("swids/sonar-scanner:2.8").inside() {
 //                                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner")
 //                                }
@@ -87,10 +86,10 @@ pipeline {
                         allowMissing         : false,
                         alwaysLinkToLastBuild: false,
                         keepAll              : true,
-                        reportDir            : 'coverage',
-                        reportFiles          : 'index.html',
-                        reportName           : 'RCov Report',
-                        reportTitles         : 'Coverage'
+                        reportDir            : "coverage",
+                        reportFiles          : "index.html",
+                        reportName           : "RCov Report",
+                        reportTitles         : "Coverage"
                     ]
                 }
             }
