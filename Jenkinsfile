@@ -46,15 +46,18 @@ pipeline {
                         sh 'npm run coverage'
                     },
                     sonar: {
+                        script {
+                            scannerHome = tool 'SonarQube'
+                        }
+                        withSonarQubeEnv('SonarQube') {
+                            sh("${scannerHome}/bin/sonar-scanner")
+                        }
 //                        script {
-//                            scannerHome = tool 'SonarQube'
-//                        }
-//                        script {
-                            withSonarQubeEnv('SonarQube') {
-                                docker.image("swids/sonar-scanner:2.8").inside() {
-                                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner")
-                                }
-                            }
+//                            withSonarQubeEnv('SonarQube') {
+//                                docker.image("swids/sonar-scanner:2.8").inside() {
+//                                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner")
+//                                }
+//                            }
 //                        }
 //                        sh("${scannerHome}/bin/sonar-scanner " +
 //                            "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
