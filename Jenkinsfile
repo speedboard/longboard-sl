@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-pipeline {
+node {
     agent {
         docker {
             image "node:alpine"
@@ -50,7 +50,7 @@ pipeline {
                             scannerHome = tool "SonarQube"
                         }
                         withSonarQubeEnv("SonarQube") {
-                            sh "${scannerHome}/bin/sonar-scanner"
+                            sh "sonar-scanner"
                         }
 //                        script {
 //                            withSonarQubeEnv("SonarQube") {
