@@ -39,19 +39,47 @@ pipeline {
                 sh "npm test"
             }
         }
+        stage("Code coverage") {
+            steps {
+                sh "npm run coverage"
+            }
+            post {
+                success {
+                    publishHTML target: [
+                        allowMissing         : false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll              : true,
+                        reportDir            : "coverage",
+                        reportFiles          : "index.html",
+                        reportName           : "RCov Report",
+                        reportTitles         : "Coverage"
+                    ]
+                }
+            }
+        }
         stage("Code analysis") {
             steps {
-                parallel(
-                    coverage: {
-                        sh "npm run coverage"
-                    },
-                    sonar: {
-                        script {
-                            scannerHome = tool "SonarQube"
-                        }
-                        withSonarQubeEnv("SonarQube") {
-                            sh "sonar-scanner"
-                        }
+                script {
+                    scannerHome = tool "SonarQube"
+                }
+                withSonarQubeEnv("SonarQube") {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+//        stage("Code analysis") {
+//            steps {
+//                parallel(
+//                    coverage: {
+//                        sh "npm run coverage"
+//                    },
+//                    sonar: {
+//                        script {
+//                            scannerHome = tool "SonarQube"
+//                        }
+//                        withSonarQubeEnv("SonarQube") {
+//                            sh "${scannerHome}/bin/sonar-scanner"
+//                        }
 //                        script {
 //                            withSonarQubeEnv("SonarQube") {
 //                                docker.image("swids/sonar-scanner:2.8").inside() {
@@ -77,23 +105,23 @@ pipeline {
 //                            "-Dsonar.typescript.lcov.reportPaths=coverage/lcov.info"
 //                        )
 //                    }
-                    }
-                )
-            }
-            post {
-                success {
-                    publishHTML target: [
-                        allowMissing         : false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll              : true,
-                        reportDir            : "coverage",
-                        reportFiles          : "index.html",
-                        reportName           : "RCov Report",
-                        reportTitles         : "Coverage"
-                    ]
-                }
-            }
-        }
+//                    }
+//                )
+//            }
+//            post {
+//                success {
+//                    publishHTML target: [
+//                        allowMissing         : false,
+//                        alwaysLinkToLastBuild: false,
+//                        keepAll              : true,
+//                        reportDir            : "coverage",
+//                        reportFiles          : "index.html",
+//                        reportName           : "RCov Report",
+//                        reportTitles         : "Coverage"
+//                    ]
+//                }
+//            }
+//        }
         stage("Code quality") {
             steps {
                 script {
