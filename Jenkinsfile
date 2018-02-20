@@ -12,7 +12,7 @@ node {
     docker.image("node:alpine").inside('-u root') {
 
         stage("Setup") {
-            sh "apk add -U openssl"
+            sh "apk add --update --no-cache openssl"
         }
 
         stage("Generate Cert") {
@@ -34,7 +34,7 @@ node {
     stage("Code analysis") {
         parallel(
             coveralls: {
-                docker.build("longboard:${env.BUILD_ID}").inside() {
+                docker.image("node:alpine").inside() {
 
                     sh "npm run coverage"
 
