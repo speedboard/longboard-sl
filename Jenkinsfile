@@ -45,18 +45,18 @@ node {
 
         }
 
-        def sonarScanner = docker.image("swids/sonar-scanner:2.8")
+    }
+
+    docker.image("swids/sonar-scanner:2.8").inside() {
 
         stage("Code analysis") {
 
             withSonarQubeEnv("SonarQube") {
-                sonarScanner.inside() {
-                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
-                        "-Dsonar.branch=${env.BRANCH_NAME}"
-                    )
-                }
+                sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                    "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                    "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
+                    "-Dsonar.branch=${env.BRANCH_NAME}"
+                )
 
             }
 
