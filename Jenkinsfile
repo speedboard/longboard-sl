@@ -22,9 +22,7 @@ node {
         }
 
         stage("Install dependencies") {
-            withEnv(["DATABASE_URL = \"mongodb://172.17.0.1:27017/speedboard\"", "DATABASE_NAME = \"speedboard\""]) {
-                sh "npm i"
-            }
+            sh "npm i"
         }
 
         stage("Test") {
@@ -33,9 +31,7 @@ node {
 
         stage("Code coverage") {
 
-            withEnv(["COVERALLS_REPO_TOKEN = oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC", "CI = true"]) {
-                sh "npm run coverage"
-            }
+            sh "npm run coverage"
 
             publishHTML target: [
                 allowMissing         : false,
@@ -51,14 +47,28 @@ node {
 
         stage("Code analysis") {
 
-            script {
-                scannerHome = tool "SonarScanner"
-            }
-
             withSonarQubeEnv("SonarQube") {
-                sh "${scannerHome}/bin/sonar-scanner"
+                docker.image("swids/sonar-scanner:2.8").inside() {
+                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
+                        "-Dsonar.branch=${env.BRANCH_NAME}"
+                    )
+                }
+
             }
 
+        }
+
+        stage("Code quality") {
+            script {
+                timeout(time: 1, unit: "HOURS") {
+                    def qg = waitForQualityGate()
+                    if (qg.status != "OK") {
+                        error("Pipeline aborted due to quality gate failure: ${qg.status}")
+                    }
+                }
+            }
         }
 
     }
