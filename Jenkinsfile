@@ -33,4 +33,10 @@ node {
         }
     }
 
+    stage("Test") {
+        steps {
+            sh "npm test"
+        }
+    }
+
 }
