@@ -2,6 +2,10 @@ node {
 
     def dockerImage = docker.build("longboard:${env.BUILD_ID}")
 
+    stage("Checkout") {
+        checkout(scm)
+    }
+
     dockerImage.inside() {
 
         environment {
