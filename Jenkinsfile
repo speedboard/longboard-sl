@@ -9,10 +9,10 @@ node {
         checkout(scm)
     }
 
-    docker.build("longboard:${env.BUILD_ID}").inside() {
+    docker.image("node:alpine").inside() {
 
         stage("Setup") {
-            sh "echo ${env.COVERALLS_REPO_TOKEN}"
+            sh "apk add -U openssl"
         }
 
         stage("Generate Cert") {
