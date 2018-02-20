@@ -5,13 +5,11 @@ env.CI = true
 
 node {
 
-    def dockerImage = docker.build("longboard:${env.BUILD_ID}")
-
     stage("Checkout") {
         checkout(scm)
     }
 
-    dockerImage.inside() {
+    docker.build("longboard:${env.BUILD_ID}").inside() {
 
         stage("Setup") {
             sh "echo ${env.COVERALLS_REPO_TOKEN}"
@@ -66,6 +64,6 @@ node {
     }
 
     // Clean up workspace
-//    step([$class: 'WsCleanup'])
+    step([$class: 'WsCleanup'])
 
 }
