@@ -1,3 +1,8 @@
+env.COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
+env.DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
+env.DATABASE_NAME = "speedboard"
+env.CI = true
+
 node {
 
     def dockerImage = docker.build("longboard:${env.BUILD_ID}")
@@ -7,13 +12,6 @@ node {
     }
 
     dockerImage.inside() {
-
-        environment {
-            COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
-            DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
-            DATABASE_NAME = "speedboard"
-            CI = true
-        }
 
         stage("Setup") {
             sh "echo ${env.COVERALLS_REPO_TOKEN}"
