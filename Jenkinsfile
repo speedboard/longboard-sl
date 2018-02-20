@@ -39,4 +39,23 @@ node {
         }
     }
 
+    stage("Code coverage") {
+        dockerImage.inside() {
+            sh "npm run coverage"
+        }
+        post {
+            success {
+                publishHTML target: [
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll              : true,
+                    reportDir            : "coverage",
+                    reportFiles          : "index.html",
+                    reportName           : "RCov Report",
+                    reportTitles         : "Coverage"
+                ]
+            }
+        }
+    }
+
 }
