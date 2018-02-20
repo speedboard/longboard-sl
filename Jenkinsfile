@@ -47,35 +47,69 @@ node {
 
     }
 
-    docker.image("swids/sonar-scanner:2.8").inside() {
+//    docker.image("swids/sonar-scanner:2.8").inside() {
+//
+//        stage("Code analysis") {
+//
+//            withSonarQubeEnv("SonarQube") {
+//                sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                    "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                    "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
+//                    "-Dsonar.branch=${env.BRANCH_NAME}"
+//                )
+//
+//            }
+//
+//        }
 
-        stage("Code analysis") {
+    stage("Code analysis") {
+        parallel(
+            coverage: {
 
-            withSonarQubeEnv("SonarQube") {
-                sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                    "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                    "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
-                    "-Dsonar.branch=${env.BRANCH_NAME}"
-                )
+                sh "npm run coverage"
+
+                publishHTML target: [
+                    allowMissing         : false,
+                    alwaysLinkToLastBuild: false,
+                    keepAll              : true,
+                    reportDir            : "coverage",
+                    reportFiles          : "index.html",
+                    reportName           : "RCov Report",
+                    reportTitles         : "Coverage"
+                ]
+
+            },
+            sonar: {
+
+                script {
+                    scannerHome = tool "SonarQube"
+                }
+
+                withSonarQubeEnv("SonarQube") {
+                    sh("${scannerHome}/bin/sonar-scanner " +
+                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                }
 
             }
+        )
+    }
 
-        }
-
-        stage("Code quality") {
-            script {
-                timeout(time: 1, unit: "HOURS") {
-                    def qg = waitForQualityGate()
-                    if (qg.status != "OK") {
-                        error("Pipeline aborted due to quality gate failure: ${qg.status}")
-                    }
+    stage("Code quality") {
+        script {
+            timeout(time: 1, unit: "HOURS") {
+                def qg = waitForQualityGate()
+                if (qg.status != "OK") {
+                    error("Pipeline aborted due to quality gate failure: ${qg.status}")
                 }
             }
         }
-
     }
 
-    // Clean up workspace
+//    }
+
+// Clean up workspace
     step([$class: 'WsCleanup'])
 
 }
