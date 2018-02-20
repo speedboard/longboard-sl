@@ -34,7 +34,7 @@ node {
     }
 
     stage("Test") {
-        steps {
+        dockerImage.inside() {
             sh "npm test"
         }
     }
