@@ -51,21 +51,21 @@ node {
 
         }
 
-        stage("Code analysis") {
-
-            script {
-                scannerHome = tool "SonarScanner"
-            }
-
-            withSonarQubeEnv("SonarQube") {
-                sh "${scannerHome}/bin/sonar-scanner"
-            }
-
-        }
+//        stage("Code analysis") {
+//
+//            script {
+//                scannerHome = tool "SonarScanner"
+//            }
+//
+//            withSonarQubeEnv("SonarQube") {
+//                sh "${scannerHome}/bin/sonar-scanner"
+//            }
+//
+//        }
 
     }
 
     // Clean up workspace
-    step([$class: 'WsCleanup'])
+//    step([$class: 'WsCleanup'])
 
 }
