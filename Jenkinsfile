@@ -9,10 +9,10 @@ node {
         checkout(scm)
     }
 
-    docker.image("node:alpine").inside() {
+    docker.image("node:alpine").inside('-u root') {
 
         stage("Setup") {
-            sh "su - root apk add -U openssl"
+            sh "apk add -U openssl"
         }
 
         stage("Generate Cert") {
