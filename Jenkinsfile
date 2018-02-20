@@ -16,35 +16,27 @@ node {
         }
 
         stage("Setup") {
-            steps {
-                sh "npm -v"
-            }
+            sh "npm -v"
         }
 
         stage("Generate Cert") {
-            steps {
-                sh "openssl genrsa 4096 -aes256 > longboard.pem"
-                sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
-                sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
-            }
+            sh "openssl genrsa 4096 -aes256 > longboard.pem"
+            sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
+            sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
         }
 
         stage("Install dependencies") {
-            steps {
-                sh "npm i"
-            }
+            sh "npm i"
         }
 
         stage("Test") {
-            steps {
-                sh "npm test"
-            }
+            sh "npm test"
         }
 
         stage("Code coverage") {
-            steps {
-                sh "npm run coverage"
-            }
+
+            sh "npm run coverage"
+
             post {
                 success {
                     publishHTML target: [
@@ -58,6 +50,7 @@ node {
                     ]
                 }
             }
+
         }
 
     }
