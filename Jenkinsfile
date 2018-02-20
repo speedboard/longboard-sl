@@ -47,54 +47,71 @@ node {
 
     }
 
-//    docker.image("swids/sonar-scanner:2.8").inside() {
-//
-//        stage("Code analysis") {
-//
-//            withSonarQubeEnv("SonarQube") {
-//                sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-//                    "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-//                    "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
-//                    "-Dsonar.branch=${env.BRANCH_NAME}"
-//                )
-//
-//            }
-//
-//        }
-
     stage("Code analysis") {
         parallel(
             coverage: {
+                docker.build("longboard:${env.BUILD_ID}").inside() {
 
-                sh "npm run coverage"
+                    sh "npm run coverage"
 
-                publishHTML target: [
-                    allowMissing         : false,
-                    alwaysLinkToLastBuild: false,
-                    keepAll              : true,
-                    reportDir            : "coverage",
-                    reportFiles          : "index.html",
-                    reportName           : "RCov Report",
-                    reportTitles         : "Coverage"
-                ]
+                    publishHTML target: [
+                        allowMissing         : false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll              : true,
+                        reportDir            : "coverage",
+                        reportFiles          : "index.html",
+                        reportName           : "RCov Report",
+                        reportTitles         : "Coverage"
+                    ]
 
+                }
             },
             sonar: {
-
-                script {
-                    scannerHome = tool "SonarScanner"
-                }
-
                 withSonarQubeEnv("SonarQube") {
-                    sh("${scannerHome}/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                    docker.image("swids/sonar-scanner:2.8").inside() {
+                        sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                            "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                            "-Dsonar.host.url=${env.SONAR_HOST_URL} " +
+                            "-Dsonar.branch=${env.BRANCH_NAME}")
+                    }
                 }
-
             }
         )
     }
+
+//    stage("Code analysis") {
+//        parallel(
+//            coverage: {
+//
+//                sh "npm run coverage"
+//
+//                publishHTML target: [
+//                    allowMissing         : false,
+//                    alwaysLinkToLastBuild: false,
+//                    keepAll              : true,
+//                    reportDir            : "coverage",
+//                    reportFiles          : "index.html",
+//                    reportName           : "RCov Report",
+//                    reportTitles         : "Coverage"
+//                ]
+//
+//            },
+//            sonar: {
+//
+//                script {
+//                    scannerHome = tool "SonarScanner"
+//                }
+//
+//                withSonarQubeEnv("SonarQube") {
+//                    sh("${scannerHome}/bin/sonar-scanner " +
+//                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                }
+//
+//            }
+//        )
+//    }
 
     stage("Code quality") {
         timeout(time: 1, unit: "HOURS") {
