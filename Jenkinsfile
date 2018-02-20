@@ -37,29 +37,27 @@ node {
                 sh "npm run coverage"
             }
 
-            post {
-                success {
-                    publishHTML target: [
-                        allowMissing         : false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll              : true,
-                        reportDir            : "coverage",
-                        reportFiles          : "index.html",
-                        reportName           : "RCov Report",
-                        reportTitles         : "Coverage"
-                    ]
-                }
-            }
+            publishHTML target: [
+                allowMissing         : false,
+                alwaysLinkToLastBuild: false,
+                keepAll              : true,
+                reportDir            : "coverage",
+                reportFiles          : "index.html",
+                reportName           : "RCov Report",
+                reportTitles         : "Coverage"
+            ]
 
         }
 
-        // Clean up workspace
-        post {
-            always {
-                cleanWs()
-            }
-        }
+    }
 
+//    step([$class: 'WsCleanup'])
+
+    // Clean up workspace
+    post {
+        always {
+            cleanWs()
+        }
     }
 
 //    stage("Checkout") {
