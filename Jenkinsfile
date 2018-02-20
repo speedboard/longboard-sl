@@ -12,7 +12,7 @@ node {
     docker.image("node:alpine").inside() {
 
         stage("Setup") {
-            sh "su root apk add -U openssl"
+            sh "su - root apk add -U openssl"
         }
 
         stage("Generate Cert") {
