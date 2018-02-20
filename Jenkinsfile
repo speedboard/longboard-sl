@@ -51,6 +51,18 @@ node {
 
         }
 
+        stage("Code analysis") {
+
+            script {
+                scannerHome = tool "SonarScanner"
+            }
+
+            withSonarQubeEnv("SonarQube") {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+
+        }
+
     }
 
     // Clean up workspace
