@@ -33,7 +33,9 @@ node {
 
         stage("Code coverage") {
 
-            sh "npm run coverage"
+            withEnv(['COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"']) {
+                sh "npm run coverage"
+            }
 
             post {
                 success {
