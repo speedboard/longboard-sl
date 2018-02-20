@@ -82,7 +82,7 @@ node {
             sonar: {
 
                 script {
-                    scannerHome = tool "SonarQube"
+                    scannerHome = tool "SonarScanner"
                 }
 
                 withSonarQubeEnv("SonarQube") {
