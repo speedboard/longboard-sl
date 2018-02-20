@@ -2,6 +2,7 @@ build
 .tscache
 test/reports/*.xml
 .vscode/
+.scannerwork
 
 # Created by .ignore support plugin (hsz.mobi)
 

@@ -22,10 +22,12 @@
         ],
         "reporter": [
             "html",
-            "text"
+            "text",
+            "lcov",
+            "text-lcov"
         ],
         "all": true,
-        "cache": false,
+        "cache": true,
         "sourceMap": true,
         "instrument": true
     },
