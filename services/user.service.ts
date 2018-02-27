@@ -3,7 +3,7 @@ import {Credential} from '../models/credential';
 import {sign, SignOptions} from 'jsonwebtoken';
 import {BaseService} from './base.service';
 import {Payload} from '../models/payload';
-import {isNullOrUndefined} from 'util';
+import {format, isNullOrUndefined} from 'util';
 import {privateKey} from '../lib/rsa';
 import {User} from '../models/user';
 import {Db, InsertOneWriteOpResult} from 'mongodb';
@@ -40,7 +40,7 @@ export class UserService extends BaseService {
         //     return Promise.reject(new BusinessException(await this.resource.message('app_could_not_validate_credentials'), 401));
         // }
 
-        this.logger.log('info', await this.resource.message('app_validating_user_credentials', credential));
+        this.logger.log('info', format(await this.resource.message('app_validating_user_credentials'), credential));
 
         return this.collection.findOne({'login': credential.username, 'state': 1}, {
             sort: {created: -1}, limit: 1
