@@ -1,4 +1,5 @@
 build
+dist
 .tscache
 test/reports/*.xml
 .vscode/
