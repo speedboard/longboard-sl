@@ -1,15 +1,16 @@
 {
     "compilerOptions": {
-        /* Basic Options */
-        "target": "es2016",
         /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
         "module": "commonjs",
+        /* Basic Options */
+        "target": "es6",
         /* Specify module code generation: 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
-        "outDir": "./build",
+        "outDir": "dist",
         /* Strict Type-Checking Options */
         "strict": true,
         /* Enable all strict type-checking options. */
         "noImplicitAny": true,
+        "moduleResolution": "node",
         /* Generates corresponding '.map' file. */
         "sourceMap": true,
         /* Raise error on expressions and declarations with an implied 'any' type. */
@@ -17,10 +18,15 @@
             "node_modules/@types"
         ],
         "lib": [
-            "esnext",
-            "es2015"
-        ]
+            "ES2016"
+        ],
+        "baseUrl": ".",
         /* List of folders to include type definitions from. */
+        "paths": {
+            "*": [
+                "*"
+            ]
+        }
     },
     "include": [
         "./**/*.ts"
