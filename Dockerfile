@@ -1,6 +1,6 @@
 FROM node:alpine
 
-ENV DATABASE_URL "mongodb://172.17.0.1:27017/speedboard"
+ENV DATABASE_URL "mongodb://db:27017/speedboard"
 ENV DATABASE_NAME "speedboard"
 
 # install openssl
@@ -33,4 +33,3 @@ EXPOSE 8000
 
 # cmd to start service
 CMD [ "pm2", "--no-daemon", "start", "ecosystem.json" ]
-#CMD [ "npm", "start" ]

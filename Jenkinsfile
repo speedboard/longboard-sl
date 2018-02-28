@@ -93,6 +93,16 @@ node {
         }
     }
 
+    stage("Conteiner build") {
+        docker.build('longboard')
+    }
+
+    stage("Conteiner push") {
+        docker.withRegistry() {
+            docker.image('longboard').push('latest')
+        }
+    }
+
     // Clean up workspace
     step([$class: 'WsCleanup'])
 

@@ -25,13 +25,16 @@ gulp.task('lint', () =>
 
 // Copy non-js files to dist
 gulp.task('copy', () => {
-    gulp.src([
-        'config/**',
-        'locales/**',
-        'resources/**',
-        'repository/**'], {
-        'base': '.'
-    }).pipe(newer('dist'))
+    gulp.src(
+        [
+            'config/**',
+            'locales/**',
+            'resources/**',
+            'repository/**',
+            '*.pem'
+        ], {
+            'base': '.'
+        }).pipe(newer('dist'))
         .pipe(gulp.dest('dist'))
 });
 
