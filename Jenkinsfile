@@ -98,7 +98,7 @@ node {
     }
 
     stage("Conteiner push") {
-        docker.withRegistry() {
+        docker.withRegistry('https://775455448733.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-us-west-2:speedlongboard-aws') {
             docker.image('longboard').push('latest')
         }
     }
