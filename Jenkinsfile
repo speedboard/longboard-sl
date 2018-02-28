@@ -1,6 +1,7 @@
 env.COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
 env.DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
 env.DATABASE_NAME = "speedboard"
+env.AWS_ECR_DISABLE_CACHE = true
 env.AWS_ECR_LOGIN = true
 env.CI = true
 
