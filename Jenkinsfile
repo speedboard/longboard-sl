@@ -1,6 +1,7 @@
 env.COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
 env.DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
 env.DATABASE_NAME = "speedboard"
+env.AWS_ECR_LOGIN = true
 env.CI = true
 
 node {
@@ -9,7 +10,7 @@ node {
         checkout(scm)
     }
 
-    docker.image("node:alpine").inside('-u root') {
+    docker.image("node:alpine").inside("-u root") {
 
         stage("Setup") {
             sh "apk add --update --no-cache openssl"
@@ -67,18 +68,18 @@ node {
             cobertura: {
                 // Publish coverage
                 step([
-                    $class                    : 'CoberturaPublisher',
+                    $class                    : "CoberturaPublisher",
                     autoUpdateHealth          : false,
                     autoUpdateStability       : false,
-                    coberturaReportFile       : '**/**coverage.xml',
-                    conditionalCoverageTargets: '70, 0, 0',
+                    coberturaReportFile       : "**/**coverage.xml",
+                    conditionalCoverageTargets: "70, 0, 0",
                     failUnhealthy             : false, failUnstable: false,
-                    lineCoverageTargets       : '80, 0, 0',
+                    lineCoverageTargets       : "80, 0, 0",
                     maxNumberOfBuilds         : 0,
-                    methodCoverageTargets     : '80, 0, 0',
-                    sourceEncoding            : 'UTF_8',
-                    zoomCoverageChart         : true]
-                )
+                    methodCoverageTargets     : "80, 0, 0",
+                    sourceEncoding            : "UTF_8",
+                    zoomCoverageChart         : true
+                ])
             },
 
         )
@@ -94,16 +95,16 @@ node {
     }
 
     stage("Conteiner build") {
-        docker.build('longboard')
+        docker.build("longboard")
     }
 
     stage("Conteiner push") {
-        docker.withRegistry('https://775455448733.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:speedlongboard-aws') {
-            docker.image('longboard').push('latest')
+        docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
+            docker.image("longboard").push("latest")
         }
     }
 
     // Clean up workspace
-    step([$class: 'WsCleanup'])
+    step([$class: "WsCleanup"])
 
 }
