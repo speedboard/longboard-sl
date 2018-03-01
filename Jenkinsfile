@@ -29,44 +29,44 @@ node {
 
         stage("Run unit test") {
             sh "npm test"
-//            sh "npm run sonar"
+            sh "npm run sonar"
         }
 
     }
 
     stage("Code analysis") {
         parallel(
-//            coveralls: {
-//                docker.image("node:alpine").inside() {
-//
-//                    sh "npm run coverage"
-//
-//                    publishHTML target: [
-//                        allowMissing         : false,
-//                        alwaysLinkToLastBuild: false,
-//                        keepAll              : true,
-//                        reportDir            : "coverage",
-//                        reportFiles          : "index.html",
-//                        reportName           : "RCov Report",
-//                        reportTitles         : "Coverage"
-//                    ]
-//
-//                }
-//            },
-//            sonarqube: {
-//
-//                script {
-//                    scannerHome = tool "SonarScanner"
-//                }
-//
-//                withSonarQubeEnv("SonarQube") {
-//                    sh("${scannerHome}/bin/sonar-scanner " +
-//                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-//                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-//                        "-Dsonar.branch=${env.BRANCH_NAME} ")
-//                }
-//
-//            },
+            coveralls: {
+                docker.image("node:alpine").inside() {
+
+                    sh "npm run coverage"
+
+                    publishHTML target: [
+                        allowMissing         : false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll              : true,
+                        reportDir            : "coverage",
+                        reportFiles          : "index.html",
+                        reportName           : "RCov Report",
+                        reportTitles         : "Coverage"
+                    ]
+
+                }
+            },
+            sonarqube: {
+
+                script {
+                    scannerHome = tool "SonarScanner"
+                }
+
+                withSonarQubeEnv("SonarQube") {
+                    sh("${scannerHome}/bin/sonar-scanner " +
+                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                }
+
+            },
             cobertura: {
                 // Publish coverage
                 step([
@@ -84,59 +84,59 @@ node {
                     zoomCoverageChart         : true
                 ])
             },
-//            junit: {
-//                // Publish test's
-//                step([
-//                    $class     : 'JUnitResultArchiver',
-//                    testResults: '**/**junit.xml'
-//                ])
-//            }
-            xunit: {
+            junit: {
                 // Publish test's
                 step([
-                    $class        : 'XUnitBuilder',
-                    testTimeMargin: '3000',
-                    thresholdMode : 1,
-                    thresholds    : [
-                        [
-                            $class              : 'FailedThreshold',
-                            failureNewThreshold : '',
-                            failureThreshold    : '0',
-                            unstableNewThreshold: '',
-                            unstableThreshold   : '1'
-                        ],
-                        [
-                            $class              : 'SkippedThreshold',
-                            failureNewThreshold : '',
-                            failureThreshold    : '0',
-                            unstableNewThreshold: '',
-                            unstableThreshold   : ''
-                        ]
-                    ],
-                    tools         : [
-                        [
-                            $class               : 'CppUnitTestType',
-                            deleteOutputFiles    : false,
-                            failIfNotNew         : false,
-                            pattern              : '**/**xunit.xml',
-                            skipNoTestFiles      : false,
-                            stopProcessingIfError: true
-                        ]
-                    ]
+                    $class     : 'JUnitResultArchiver',
+                    testResults: '**/**junit.xml'
                 ])
-
             }
+//            xunit: {
+//                // Publish test's
+//                step([
+//                    $class        : 'XUnitBuilder',
+//                    testTimeMargin: '3000',
+//                    thresholdMode : 1,
+//                    thresholds    : [
+//                        [
+//                            $class              : 'FailedThreshold',
+//                            failureNewThreshold : '',
+//                            failureThreshold    : '0',
+//                            unstableNewThreshold: '',
+//                            unstableThreshold   : '1'
+//                        ],
+//                        [
+//                            $class              : 'SkippedThreshold',
+//                            failureNewThreshold : '',
+//                            failureThreshold    : '0',
+//                            unstableNewThreshold: '',
+//                            unstableThreshold   : ''
+//                        ]
+//                    ],
+//                    tools         : [
+//                        [
+//                            $class               : 'CppUnitTestType',
+//                            deleteOutputFiles    : false,
+//                            failIfNotNew         : false,
+//                            pattern              : '**/**xunit.xml',
+//                            skipNoTestFiles      : false,
+//                            stopProcessingIfError: true
+//                        ]
+//                    ]
+//                ])
+//
+//            }
         )
     }
 
-//    stage("Code quality") {
-//        timeout(time: 1, unit: "HOURS") {
-//            def qg = waitForQualityGate()
-//            if (qg.status != "OK") {
-//                error("Pipeline aborted due to quality gate failure: ${qg.status}")
-//            }
-//        }
-//    }
+    stage("Code quality") {
+        timeout(time: 1, unit: "HOURS") {
+            def qg = waitForQualityGate()
+            if (qg.status != "OK") {
+                error("Pipeline aborted due to quality gate failure: ${qg.status}")
+            }
+        }
+    }
 //
 //    stage("Conteiner build") {
 //        docker.build("longboard:${env.BUILD_ID}")
@@ -149,6 +149,6 @@ node {
 //    }
 
     // Clean up workspace
-    //step([$class: "WsCleanup"])
+    step([$class: "WsCleanup"])
 
 }
