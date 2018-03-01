@@ -115,7 +115,7 @@ node {
                     ],
                     tools         : [
                         [
-                            $class               : 'JUnitType',
+                            $class               : 'MSTestJunitHudsonTestType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
                             pattern              : '**/**xunit.xml',
