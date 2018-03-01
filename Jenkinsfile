@@ -115,10 +115,10 @@ node {
                     ],
                     tools         : [
                         [
-                            $class               : 'JUnitType',
+                            $class               : 'BoostTestJunitHudsonTestType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
-                            pattern              : '**/**xunit.xml',
+                            pattern              : '**/**junit.xml',
                             skipNoTestFiles      : false,
                             stopProcessingIfError: true
                         ]
