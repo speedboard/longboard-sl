@@ -29,6 +29,7 @@ node {
 
         stage("Run unit test") {
             sh "npm test"
+            sh "npm run sonar"
         }
 
     }
@@ -57,8 +58,6 @@ node {
                 script {
                     scannerHome = tool "SonarScanner"
                 }
-
-                sh "npm run sonar"
 
                 withSonarQubeEnv("SonarQube") {
                     sh("${scannerHome}/bin/sonar-scanner " +
