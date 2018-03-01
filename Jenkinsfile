@@ -115,6 +115,7 @@ node {
                     ],
                     tools         : [
                         [
+                            $class               : 'CppUnitTestType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
                             pattern              : '**/**xunit.xml',
