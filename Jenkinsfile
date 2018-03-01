@@ -29,7 +29,7 @@ node {
 
         stage("Run unit test") {
             sh "npm test"
-            sh "npm run sonar"
+//            sh "npm run sonar"
         }
 
     }
@@ -84,14 +84,34 @@ node {
                     zoomCoverageChart         : true
                 ])
             },
-            junit: {
+//            junit: {
+//                // Publish test's
+//                step([
+//                    $class     : 'JUnitResultArchiver',
+//                    testResults: '**/**junit.xml'
+//                ])
+//            }
+            xunit: {
                 // Publish test's
-                step([
-                    $class     : 'JUnitResultArchiver',
-                    testResults: '**/**junit.xml'
+                step([$class    : 'XUnitBuilder',
+                      thresholds: [
+                          [
+                              $class          : 'SkippedThreshold',
+                              failureThreshold: '0'
+                          ],
+                          [
+                              $class          : 'FailedThreshold',
+                              failureThreshold: '0'
+                          ]
+                      ],
+                      tools     : [
+                          [
+                              $class : 'BoostTestJunitHudsonTestType',
+                              pattern: '**/**junit.xml'
+                          ]
+                      ]
                 ])
             }
-
         )
     }
 
