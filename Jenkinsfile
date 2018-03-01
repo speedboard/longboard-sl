@@ -142,11 +142,11 @@ node {
         docker.build("longboard:${env.BUILD_ID}")
     }
 
-    stage("Conteiner push") {
-        docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
-            docker.image("longboard").push("${env.BUILD_ID}")
-        }
-    }
+//    stage("Conteiner push") {
+//        docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
+//            docker.image("longboard").push("${env.BUILD_ID}")
+//        }
+//    }
 
     // Clean up workspace
     step([$class: "WsCleanup"])
