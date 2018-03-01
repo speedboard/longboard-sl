@@ -1,6 +1,8 @@
 --require ts-node/register **/*.spec.ts
 --require source-map-support/register
---reporter mocha-junit-reporter
---reporter-options mochaFile=./coverage/test-junit.xml
+#--reporter mocha-junit-reporter
+#--reporter-options mochaFile=./coverage/test-junit.xml
+--reporter mocha-sonarqube-reporter testFolder
+--reporter-options output=./coverage/test-xunit.xml
 --timeout 30000
 --recursive

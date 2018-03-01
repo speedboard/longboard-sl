@@ -87,7 +87,7 @@ node {
                 // Publish test's
                 step([
                     $class     : 'JUnitResultArchiver',
-                    testResults: '**/**-junit.xml'
+                    testResults: '**/**xunit.xml'
                 ])
             }
 
