@@ -58,6 +58,8 @@ node {
                     scannerHome = tool "SonarScanner"
                 }
 
+                sh "npm run sonar"
+
                 withSonarQubeEnv("SonarQube") {
                     sh("${scannerHome}/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
@@ -87,7 +89,7 @@ node {
                 // Publish test's
                 step([
                     $class     : 'JUnitResultArchiver',
-                    testResults: '**/**xunit.xml'
+                    testResults: '**/**junit.xml'
                 ])
             }
 

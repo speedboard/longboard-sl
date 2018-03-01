@@ -10,7 +10,8 @@
         "clean": "gulp clean",
         "start": "gulp start",
         "test": "nyc ./node_modules/.bin/mocha",
-        "coverage": "nyc report --reporter=text-lcov | coveralls"
+        "coverage": "nyc report --reporter=text-lcov | coveralls",
+        "sonar": "nyc ./node_modules/.bin/mocha --reporter=mocha-sonarqube-reporter"
     },
     "nyc": {
         "extension": [
@@ -24,8 +25,8 @@
             "html",
             "text",
             "lcov",
-            "text-lcov",
-            "cobertura"
+            "cobertura",
+            "text-summary"
         ],
         "all": true,
         "cache": true,
@@ -118,6 +119,7 @@
         "gulp": "^3.9.1",
         "gulp-babel": "^7.0.1",
         "gulp-load-plugins": "^1.5.0",
+        "gulp-mocha": "^5.0.0",
         "gulp-newer": "^1.4.0",
         "gulp-nodemon": "^2.2.1",
         "gulp-sourcemaps": "^2.6.4",
