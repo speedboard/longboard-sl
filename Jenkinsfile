@@ -101,21 +101,21 @@ node {
                         [
                             $class              : 'FailedThreshold',
                             failureNewThreshold : '',
-                            failureThreshold    : '',
+                            failureThreshold    : '0',
                             unstableNewThreshold: '',
                             unstableThreshold   : '1'
                         ],
                         [
                             $class              : 'SkippedThreshold',
                             failureNewThreshold : '',
-                            failureThreshold    : '',
+                            failureThreshold    : '0',
                             unstableNewThreshold: '',
                             unstableThreshold   : ''
                         ]
                     ],
                     tools         : [
                         [
-                            $class               : 'JUnitType',
+                            $class               : 'XUnitDotNetTestType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
                             pattern              : '**/**xunit.xml',
