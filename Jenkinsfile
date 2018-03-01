@@ -84,6 +84,7 @@ node {
                 ])
             },
             junit: {
+                // Publish test's
                 step([
                     $class     : 'JUnitResultArchiver',
                     testResults: '**/**-junit.xml'
@@ -103,12 +104,12 @@ node {
     }
 
     stage("Conteiner build") {
-        docker.build("longboard")
+        docker.build("longboard:${env.BUILD_ID}")
     }
 
     stage("Conteiner push") {
         docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
-            docker.image("longboard").push("latest")
+            docker.image("longboard").push("${env.BUILD_ID}")
         }
     }
 
