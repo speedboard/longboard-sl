@@ -115,7 +115,6 @@ node {
                     ],
                     tools         : [
                         [
-                            $class               : 'XUnitDotNetTestType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
                             pattern              : '**/**xunit.xml',
