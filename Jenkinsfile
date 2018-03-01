@@ -93,24 +93,38 @@ node {
 //            }
             xunit: {
                 // Publish test's
-                step([$class    : 'XUnitBuilder',
-                      thresholds: [
-                          [
-                              $class          : 'SkippedThreshold',
-                              failureThreshold: '0'
-                          ],
-                          [
-                              $class          : 'FailedThreshold',
-                              failureThreshold: '0'
-                          ]
-                      ],
-                      tools     : [
-                          [
-                              $class : 'BoostTestJunitHudsonTestType',
-                              pattern: '**/**junit.xml'
-                          ]
-                      ]
+                step([
+                    $class        : 'XUnitBuilder',
+                    testTimeMargin: '3000',
+                    thresholdMode : 1,
+                    thresholds    : [
+                        [
+                            $class              : 'FailedThreshold',
+                            failureNewThreshold : '',
+                            failureThreshold    : '',
+                            unstableNewThreshold: '',
+                            unstableThreshold   : '1'
+                        ],
+                        [
+                            $class              : 'SkippedThreshold',
+                            failureNewThreshold : '',
+                            failureThreshold    : '',
+                            unstableNewThreshold: '',
+                            unstableThreshold   : ''
+                        ]
+                    ],
+                    tools         : [
+                        [
+                            $class               : 'JUnitType',
+                            deleteOutputFiles    : false,
+                            failIfNotNew         : false,
+                            pattern              : '**/**junit.xml',
+                            skipNoTestFiles      : false,
+                            stopProcessingIfError: true
+                        ]
+                    ]
                 ])
+
             }
         )
     }
