@@ -85,47 +85,12 @@ node {
                 ])
             },
             junit: {
-                // Publish test's
+                // Publish test"s
                 step([
-                    $class     : 'JUnitResultArchiver',
-                    testResults: '**/**junit.xml'
+                    $class     : "JUnitResultArchiver",
+                    testResults: "**/**junit.xml"
                 ])
             }
-//            xunit: {
-//                // Publish test's
-//                step([
-//                    $class        : 'XUnitBuilder',
-//                    testTimeMargin: '3000',
-//                    thresholdMode : 1,
-//                    thresholds    : [
-//                        [
-//                            $class              : 'FailedThreshold',
-//                            failureNewThreshold : '',
-//                            failureThreshold    : '0',
-//                            unstableNewThreshold: '',
-//                            unstableThreshold   : '1'
-//                        ],
-//                        [
-//                            $class              : 'SkippedThreshold',
-//                            failureNewThreshold : '',
-//                            failureThreshold    : '0',
-//                            unstableNewThreshold: '',
-//                            unstableThreshold   : ''
-//                        ]
-//                    ],
-//                    tools         : [
-//                        [
-//                            $class               : 'CppUnitTestType',
-//                            deleteOutputFiles    : false,
-//                            failIfNotNew         : false,
-//                            pattern              : '**/**xunit.xml',
-//                            skipNoTestFiles      : false,
-//                            stopProcessingIfError: true
-//                        ]
-//                    ]
-//                ])
-//
-//            }
         )
     }
 
@@ -137,11 +102,23 @@ node {
             }
         }
     }
-//
+
+    stage("Development deploy approval") {
+        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+            timeout(time: 3, unit: "MINUTES") {
+                //input message:"Approve deployment?", submitter: "it-ops"
+                input message: "Approve deployment?"
+            }
+            timeout(time: 2, unit: "MINUTES") {
+                echo "build  ${env.BUILD_NUMBER} versions..."
+            }
+        }
+    }
+
 //    stage("Conteiner build") {
 //        docker.build("longboard:${env.BUILD_ID}")
 //    }
-
+//
 //    stage("Conteiner push") {
 //        docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
 //            docker.image("longboard").push("${env.BUILD_ID}")
