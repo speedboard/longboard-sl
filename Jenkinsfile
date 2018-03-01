@@ -118,7 +118,7 @@ node {
                             $class               : 'JUnitType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
-                            pattern              : '**/**junit.xml',
+                            pattern              : '**/**xunit.xml',
                             skipNoTestFiles      : false,
                             stopProcessingIfError: true
                         ]
