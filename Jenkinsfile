@@ -36,37 +36,37 @@ node {
 
     stage("Code analysis") {
         parallel(
-            coveralls: {
-                docker.image("node:alpine").inside() {
-
-                    sh "npm run coverage"
-
-                    publishHTML target: [
-                        allowMissing         : false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll              : true,
-                        reportDir            : "coverage",
-                        reportFiles          : "index.html",
-                        reportName           : "RCov Report",
-                        reportTitles         : "Coverage"
-                    ]
-
-                }
-            },
-            sonarqube: {
-
-                script {
-                    scannerHome = tool "SonarScanner"
-                }
-
-                withSonarQubeEnv("SonarQube") {
-                    sh("${scannerHome}/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
-                }
-
-            },
+//            coveralls: {
+//                docker.image("node:alpine").inside() {
+//
+//                    sh "npm run coverage"
+//
+//                    publishHTML target: [
+//                        allowMissing         : false,
+//                        alwaysLinkToLastBuild: false,
+//                        keepAll              : true,
+//                        reportDir            : "coverage",
+//                        reportFiles          : "index.html",
+//                        reportName           : "RCov Report",
+//                        reportTitles         : "Coverage"
+//                    ]
+//
+//                }
+//            },
+//            sonarqube: {
+//
+//                script {
+//                    scannerHome = tool "SonarScanner"
+//                }
+//
+//                withSonarQubeEnv("SonarQube") {
+//                    sh("${scannerHome}/bin/sonar-scanner " +
+//                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                }
+//
+//            },
             cobertura: {
                 // Publish coverage
                 step([
@@ -118,7 +118,7 @@ node {
                             $class               : 'JUnitType',
                             deleteOutputFiles    : false,
                             failIfNotNew         : false,
-                            pattern              : '**/**junit.xml',
+                            pattern              : '**/**xunit.xml',
                             skipNoTestFiles      : false,
                             stopProcessingIfError: true
                         ]
@@ -129,18 +129,18 @@ node {
         )
     }
 
-    stage("Code quality") {
-        timeout(time: 1, unit: "HOURS") {
-            def qg = waitForQualityGate()
-            if (qg.status != "OK") {
-                error("Pipeline aborted due to quality gate failure: ${qg.status}")
-            }
-        }
-    }
-
-    stage("Conteiner build") {
-        docker.build("longboard:${env.BUILD_ID}")
-    }
+//    stage("Code quality") {
+//        timeout(time: 1, unit: "HOURS") {
+//            def qg = waitForQualityGate()
+//            if (qg.status != "OK") {
+//                error("Pipeline aborted due to quality gate failure: ${qg.status}")
+//            }
+//        }
+//    }
+//
+//    stage("Conteiner build") {
+//        docker.build("longboard:${env.BUILD_ID}")
+//    }
 
 //    stage("Conteiner push") {
 //        docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
