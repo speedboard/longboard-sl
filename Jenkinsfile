@@ -2,8 +2,7 @@ pipeline {
 
     agent {
         docker {
-            image("node:alpine")
-            args "-u root"
+            image("node:alpine").inside("-u root")
         }
     }
 
@@ -31,11 +30,11 @@ pipeline {
 
     stages {
 
-        stage("Checkout") {
-            steps {
-                checkout(scm)
-            }
-        }
+//        stage("Checkout") {
+//            steps {
+//                checkout(scm)
+//            }
+//        }
 
         stage("Generate RSA") {
             steps {
@@ -110,26 +109,26 @@ pipeline {
 
             steps {
 
-                node {
-
-                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
-                        withSonarQubeEnv("SonarQube") {
-                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                                "-Dsonar.branch=${env.BRANCH_NAME} ")
-                        }
+//                node {
+//
+//                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
+//                        withSonarQubeEnv("SonarQube") {
+//                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                                "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                        }
+//                    }
+                    script {
+                        scannerHome = tool "SonarScanner"
                     }
-//                    script {
-//                        scannerHome = tool "SonarScanner"
-//                    }
 
-//                    withSonarQubeEnv("SonarQube") {
-//                        sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-//                            "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-//                            "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-//                            "-Dsonar.branch=${env.BRANCH_NAME} ")
-//                    }
+                    withSonarQubeEnv("SonarQube") {
+                        sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                            "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                            "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                            "-Dsonar.branch=${env.BRANCH_NAME} ")
+                    }
 
                 }
 
