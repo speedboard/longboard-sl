@@ -1,32 +1,28 @@
-env.COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
-env.DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
-env.DATABASE_NAME = "speedboard"
-env.AWS_ECR_DISABLE_CACHE = true
-env.AWS_ECR_LOGIN = true
-env.CI = true
-
 pipeline {
 
     agent {
         docker {
             image("node:alpine")
+            args "-u root"
         }
     }
 
     options {
-        // For example, we'd like to make sure we only keep 10 builds at a time, so
-        // we don't fill up our storage!
+        // For example, we"d like to make sure we only keep 10 builds at a time, so
+        // we don"t fill up our storage!
         buildDiscarder(logRotator(numToKeepStr: "2"))
 
-        // And we'd really like to be sure that this build doesn't hang forever, so
-        // let's time it out after an hour.
-        timeout(time: 25, unit: 'MINUTES')
+        // And we"d really like to be sure that this build doesn"t hang forever, so
+        // let"s time it out after an hour.
+        timeout(time: 25, unit: "MINUTES")
     }
 
     // global env variables
     environment {
         COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
         DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
+        RSA_PRIVATE_KEY = "longboard-private.pem"
+        RSA_PUBLIC_KEY = "longboard-public.pem"
         DATABASE_NAME = "speedboard"
         AWS_ECR_DISABLE_CACHE = true
         AWS_ECR_LOGIN = true
@@ -38,6 +34,15 @@ pipeline {
         stage("Checkout") {
             steps {
                 checkout(scm)
+            }
+        }
+
+        stage("Generate RSA") {
+            steps {
+                sh "apk add --update --no-cache openssl"
+                sh "openssl genrsa 4096 -aes256 > longboard.pem"
+                sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
+                sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
             }
         }
 
