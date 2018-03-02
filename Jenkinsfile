@@ -33,33 +33,33 @@ pipeline {
 //        }
 
         stage("Build and install dependencies") {
-            agent {
-                docker {
-                    image("node:alpine")
-                }
-            }
+//            agent {
+//                docker {
+//                    image("node:alpine")
+//                }
+//            }
             steps {
                 sh "npm i"
             }
         }
 
         stage("Run unit test") {
-            agent {
-                docker {
-                    image("node:alpine")
-                }
-            }
+//            agent {
+//                docker {
+//                    image("node:alpine")
+//                }
+//            }
             steps {
                 sh "npm test"
             }
         }
 
         stage("Code publish") {
-            agent {
-                docker {
-                    image("node:alpine")
-                }
-            }
+//            agent {
+//                docker {
+//                    image("node:alpine")
+//                }
+//            }
             steps {
 
                 parallel(
