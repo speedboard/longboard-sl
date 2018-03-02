@@ -48,7 +48,9 @@ pipeline {
         }
 
         stage("Run unit test") {
-            sh "npm test"
+            steps {
+                sh "npm test"
+            }
         }
 
         stage("Code analysis") {
