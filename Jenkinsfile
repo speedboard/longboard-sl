@@ -12,7 +12,7 @@ pipeline {
 
             steps {
                 node("master") {
-                    stage("Teste 2") {
+                    step {
                         if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
                             timeout(time: 3, unit: "MINUTES") {
                                 input message: "Approve deployment?"
