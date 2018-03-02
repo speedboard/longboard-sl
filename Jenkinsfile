@@ -103,36 +103,82 @@ node {
         }
     }
 
-    stage("Development deploy approval") {
+    stage("Approval deployment") {
+        parallel(
+            dev: {
+                if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+                    timeout(time: 3, unit: "MINUTES") {
+                        //input message:"Approve deployment?", submitter: "it-ops"
+                        input message: "Approve deployment?"
+                    }
+                    timeout(time: 2, unit: "MINUTES") {
+                        echo "build  ${env.BUILD_NUMBER} versions..."
+                    }
+                }
+            },
+            qa: {
+                when {
+                    // check if branch is master
+                    branch 'master'
+                }
 
-        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-            timeout(time: 3, unit: "MINUTES") {
-                //input message:"Approve deployment?", submitter: "it-ops"
-                input message: "Approve deployment?"
-            }
-            timeout(time: 2, unit: "MINUTES") {
-                echo "build  ${env.BUILD_NUMBER} versions..."
-            }
-        }
+                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                    timeout(time: 3, unit: 'MINUTES') {
+                        //input message:'Approve deployment?', submitter: 'it-ops'
+                        input message: 'Approve deployment to QA?'
+                    }
+                }
+            },
+            uat: {
+                when {
+                    // check if branch is master
+                    branch 'master'
+                }
 
+                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                    timeout(time: 3, unit: 'MINUTES') {
+                        //input message:'Approve deployment?', submitter: 'it-ops'
+                        input message: 'Approve deployment to UAT?'
+                    }
+                }
+            }
+        )
     }
 
-    stage('QA release approval and publish artifact') {
+//    stage('QA release approval and publish artifact') {
+//
+//
+//    }
 
-        when {
-            // check if branch is master
-            branch 'master'
-        }
-
-        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-            timeout(time: 3, unit: 'MINUTES') {
-                //input message:'Approve deployment?', submitter: 'it-ops'
-                input message: 'Approve deployment to QA?'
-            }
-
-        }
-
-    }
+//    stage("Development deploy approval") {
+//
+//        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+//            timeout(time: 3, unit: "MINUTES") {
+//                //input message:"Approve deployment?", submitter: "it-ops"
+//                input message: "Approve deployment?"
+//            }
+//            timeout(time: 2, unit: "MINUTES") {
+//                echo "build  ${env.BUILD_NUMBER} versions..."
+//            }
+//        }
+//
+//    }
+//
+//    stage('QA release approval and publish artifact') {
+//
+//        when {
+//            // check if branch is master
+//            branch 'master'
+//        }
+//
+//        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+//            timeout(time: 3, unit: 'MINUTES') {
+//                //input message:'Approve deployment?', submitter: 'it-ops'
+//                input message: 'Approve deployment to QA?'
+//            }
+//        }
+//
+//    }
 
 //    stage("Conteiner build") {
 //        docker.build("longboard:${env.BUILD_ID}")
