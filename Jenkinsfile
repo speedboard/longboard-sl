@@ -117,30 +117,42 @@ node {
                 }
             },
             qa: {
-                when {
-                    // check if branch is master
-                    branch 'master'
-                }
+//                when {
+//                    // check if branch is master
+//                    branch 'master'
+//                }
 
-                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                if (env.BRANCH_NAME == "master" && (currentBuild.result == null || currentBuild.result == 'SUCCESS')) {
                     timeout(time: 3, unit: 'MINUTES') {
                         //input message:'Approve deployment?', submitter: 'it-ops'
                         input message: 'Approve deployment to QA?'
                     }
-                }
-            },
-            uat: {
-                when {
-                    // check if branch is master
-                    branch 'master'
+                } else {
+                    currentBuild.result = 'ABORTED'
                 }
 
-                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+            },
+            uat: {
+//                when {
+//                    // check if branch is master
+//                    branch 'master'
+//                }
+
+                if (env.BRANCH_NAME == "master" && (currentBuild.result == null || currentBuild.result == 'SUCCESS')) {
                     timeout(time: 3, unit: 'MINUTES') {
                         //input message:'Approve deployment?', submitter: 'it-ops'
                         input message: 'Approve deployment to UAT?'
                     }
+                } else {
+                    currentBuild.result = 'ABORTED'
                 }
+//
+//                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+//                    timeout(time: 3, unit: 'MINUTES') {
+//                        //input message:'Approve deployment?', submitter: 'it-ops'
+//                        input message: 'Approve deployment to UAT?'
+//                    }
+//                }
             }
         )
     }
