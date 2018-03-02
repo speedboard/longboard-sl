@@ -34,40 +34,65 @@ pipeline {
         CI = true
     }
 
-    stage("Checkout") {
-        checkout(scm)
-    }
+    stages {
 
-    stage("Build and install dependencies") {
-        steps {
-            sh "npm i"
-        }
-    }
-
-    stage("Development deploy approval") {
-
-        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-            timeout(time: 3, unit: "MINUTES") {
-                input message: "Approve deployment?"
-            }
-            timeout(time: 2, unit: "MINUTES") {
-                echo "build  ${env.BUILD_NUMBER} versions..."
+        stage("Checkout") {
+            steps {
+                checkout(scm)
             }
         }
 
-    }
-
-    stage("QA release approval and publish artifact") {
-
-        when {
-            branch "master"
+        stage("Build and install dependencies") {
+            steps {
+                sh "npm i"
+            }
         }
 
-        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-            timeout(time: 3, unit: "MINUTES") {
-                //input message:"Approve deployment?", submitter: "it-ops"
-                input message: "Approve deployment to QA?"
+        stage("Development deploy approval") {
+
+            steps {
+
+                script {
+
+                    if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+
+                        timeout(time: 3, unit: "MINUTES") {
+                            input message: "Approve deployment?"
+                        }
+
+                        timeout(time: 2, unit: "MINUTES") {
+                            echo "build  ${env.BUILD_NUMBER} versions..."
+                        }
+
+                    }
+
+                }
+
             }
+
+        }
+
+        stage("QA release approval and publish artifact") {
+
+            when {
+                branch "master"
+            }
+
+            steps {
+
+                script {
+
+                    if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+                        timeout(time: 3, unit: "MINUTES") {
+                            //input message:"Approve deployment?", submitter: "it-ops"
+                            input message: "Approve deployment to QA?"
+                        }
+                    }
+
+                }
+
+            }
+
         }
 
     }
