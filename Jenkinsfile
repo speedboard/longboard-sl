@@ -121,6 +121,9 @@ pipeline {
 //                        "-Dsonar.branch=${env.BRANCH_NAME} ")
 //                }
 
+                sh "pwd"
+                sh "ls -laht"
+
                 withSonarQubeEnv("SonarQube") {
                     sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
