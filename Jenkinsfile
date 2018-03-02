@@ -1,6 +1,11 @@
 pipeline {
 
-    agent any
+    agent {
+        docker {
+            image("node:alpine")
+            args "-u root"
+        }
+    }
 
     options {
         // For example, we"d like to make sure we only keep 10 builds at a time, so
@@ -33,61 +38,27 @@ pipeline {
         }
 
         stage("Generate RSA") {
-
-            agent {
-                docker {
-                    image("node:alpine")
-                    args "-u root"
-                }
-            }
-
             steps {
                 sh "apk add --update --no-cache openssl"
                 sh "openssl genrsa 4096 -aes256 > longboard.pem"
                 sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
                 sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
             }
-
         }
 
         stage("Build and install dependencies") {
-
-            agent {
-                docker {
-                    image("node:alpine")
-                    args "-u root"
-                }
-            }
-
             steps {
                 sh "npm i"
             }
-
         }
 
         stage("Run unit test") {
-
-            agent {
-                docker {
-                    image("node:alpine")
-                    args "-u root"
-                }
-            }
-
             steps {
                 sh "npm test"
             }
-
         }
 
         stage("Code publish") {
-
-            agent {
-                docker {
-                    image("node:alpine")
-                    args "-u root"
-                }
-            }
 
             steps {
 
@@ -139,15 +110,27 @@ pipeline {
 
             steps {
 
-                script {
-                    scannerHome = tool "SonarScanner"
-                }
+                node {
 
-                withSonarQubeEnv("SonarQube") {
-                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
+                        withSonarQubeEnv("SonarQube") {
+                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                                "-Dsonar.branch=${env.BRANCH_NAME} ")
+                        }
+                    }
+//                    script {
+//                        scannerHome = tool "SonarScanner"
+//                    }
+
+//                    withSonarQubeEnv("SonarQube") {
+//                        sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                            "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                            "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                            "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                    }
+
                 }
 
             }
