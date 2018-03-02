@@ -31,12 +31,6 @@ pipeline {
 
     stages {
 
-        stage("Checkout") {
-            steps {
-                checkout(scm)
-            }
-        }
-
         stage("Generate RSA") {
             steps {
                 sh "apk add --update --no-cache openssl"
