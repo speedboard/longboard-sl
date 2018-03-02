@@ -5,204 +5,77 @@ env.AWS_ECR_DISABLE_CACHE = true
 env.AWS_ECR_LOGIN = true
 env.CI = true
 
-node {
+pipeline {
+
+
+    agent {
+        docker {
+            image("node:alpine")
+        }
+    }
+
+    options {
+        // For example, we'd like to make sure we only keep 10 builds at a time, so
+        // we don't fill up our storage!
+        buildDiscarder(logRotator(numToKeepStr: "2"))
+
+        // And we'd really like to be sure that this build doesn't hang forever, so
+        // let's time it out after an hour.
+        timeout(time: 25, unit: 'MINUTES')
+    }
+
+    // global env variables
+    environment {
+        COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
+        DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
+        DATABASE_NAME = "speedboard"
+        AWS_ECR_DISABLE_CACHE = true
+        AWS_ECR_LOGIN = true
+        CI = true
+    }
 
     stage("Checkout") {
         checkout(scm)
     }
 
-    docker.image("node:alpine").inside("-u root") {
-
-        stage("Setup") {
-            sh "apk add --update --no-cache openssl"
-        }
-
-        stage("Generate RSA") {
-            sh "openssl genrsa 4096 -aes256 > longboard.pem"
-            sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
-            sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
-        }
-
-        stage("Install dependencies") {
+    stage("Build and install dependencies") {
+        steps {
             sh "npm i"
         }
+    }
 
-        stage("Run unit test") {
-            sh "npm test"
-            sh "npm run sonar"
+    stage("Development deploy approval") {
+
+        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+            timeout(time: 3, unit: "MINUTES") {
+                input message: "Approve deployment?"
+            }
+            timeout(time: 2, unit: "MINUTES") {
+                echo "build  ${env.BUILD_NUMBER} versions..."
+            }
+        }
+
+    }
+
+    stage("QA release approval and publish artifact") {
+
+        when {
+            branch "master"
+        }
+
+        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+            timeout(time: 3, unit: "MINUTES") {
+                //input message:"Approve deployment?", submitter: "it-ops"
+                input message: "Approve deployment to QA?"
+            }
         }
 
     }
 
-    stage("Code analysis") {
-        parallel(
-            coveralls: {
-                docker.image("node:alpine").inside() {
-
-                    sh "npm run coverage"
-
-                    publishHTML target: [
-                        allowMissing         : false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll              : true,
-                        reportDir            : "coverage",
-                        reportFiles          : "index.html",
-                        reportName           : "RCov Report",
-                        reportTitles         : "Coverage"
-                    ]
-
-                }
-            },
-            sonarqube: {
-
-                script {
-                    scannerHome = tool "SonarScanner"
-                }
-
-                withSonarQubeEnv("SonarQube") {
-                    sh("${scannerHome}/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
-                }
-
-            },
-            cobertura: {
-                // Publish coverage
-                step([
-                    $class                    : "CoberturaPublisher",
-                    autoUpdateHealth          : false,
-                    autoUpdateStability       : false,
-                    coberturaReportFile       : "**/**coverage.xml",
-                    conditionalCoverageTargets: "70, 0, 0",
-                    failUnhealthy             : false,
-                    failUnstable              : false,
-                    lineCoverageTargets       : "80, 0, 0",
-                    maxNumberOfBuilds         : 0,
-                    methodCoverageTargets     : "80, 0, 0",
-                    sourceEncoding            : "UTF_8",
-                    zoomCoverageChart         : true
-                ])
-            },
-            junit: {
-                // Publish test"s
-                step([
-                    $class     : "JUnitResultArchiver",
-                    testResults: "**/**junit.xml"
-                ])
-            }
-        )
-    }
-
-    stage("Code quality") {
-        timeout(time: 1, unit: "HOURS") {
-            def qg = waitForQualityGate()
-            if (qg.status != "OK") {
-                error("Pipeline aborted due to quality gate failure: ${qg.status}")
-            }
+    post {
+        always {
+            cleanWs()
         }
     }
-
-    stage("Approval deployment") {
-        parallel(
-            dev: {
-                if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-                    timeout(time: 3, unit: "MINUTES") {
-                        //input message:"Approve deployment?", submitter: "it-ops"
-                        input message: "Approve deployment?"
-                    }
-                    timeout(time: 2, unit: "MINUTES") {
-                        echo "build  ${env.BUILD_NUMBER} versions..."
-                    }
-                }
-            },
-            qa: {
-//                when {
-//                    // check if branch is master
-//                    branch 'master'
-//                }
-
-                if (env.BRANCH_NAME == "master" && (currentBuild.result == null || currentBuild.result == 'SUCCESS')) {
-                    timeout(time: 3, unit: 'MINUTES') {
-                        //input message:'Approve deployment?', submitter: 'it-ops'
-                        input message: 'Approve deployment to QA?'
-                    }
-                } else {
-                    currentBuild.result = 'ABORTED'
-                }
-
-            },
-            uat: {
-//                when {
-//                    // check if branch is master
-//                    branch 'master'
-//                }
-
-                if (env.BRANCH_NAME == "master" && (currentBuild.result == null || currentBuild.result == 'SUCCESS')) {
-                    timeout(time: 3, unit: 'MINUTES') {
-                        //input message:'Approve deployment?', submitter: 'it-ops'
-                        input message: 'Approve deployment to UAT?'
-                    }
-                } else {
-                    currentBuild.result = 'ABORTED'
-                }
-//
-//                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-//                    timeout(time: 3, unit: 'MINUTES') {
-//                        //input message:'Approve deployment?', submitter: 'it-ops'
-//                        input message: 'Approve deployment to UAT?'
-//                    }
-//                }
-            }
-        )
-    }
-
-//    stage('QA release approval and publish artifact') {
-//
-//
-//    }
-
-//    stage("Development deploy approval") {
-//
-//        if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-//            timeout(time: 3, unit: "MINUTES") {
-//                //input message:"Approve deployment?", submitter: "it-ops"
-//                input message: "Approve deployment?"
-//            }
-//            timeout(time: 2, unit: "MINUTES") {
-//                echo "build  ${env.BUILD_NUMBER} versions..."
-//            }
-//        }
-//
-//    }
-//
-//    stage('QA release approval and publish artifact') {
-//
-//        when {
-//            // check if branch is master
-//            branch 'master'
-//        }
-//
-//        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-//            timeout(time: 3, unit: 'MINUTES') {
-//                //input message:'Approve deployment?', submitter: 'it-ops'
-//                input message: 'Approve deployment to QA?'
-//            }
-//        }
-//
-//    }
-
-//    stage("Conteiner build") {
-//        docker.build("longboard:${env.BUILD_ID}")
-//    }
-//
-//    stage("Conteiner push") {
-//        docker.withRegistry("https://775455448733.dkr.ecr.us-west-2.amazonaws.com", "ecr:us-west-2:speedlongboard-aws") {
-//            docker.image("longboard").push("${env.BUILD_ID}")
-//        }
-//    }
-
-    // Clean up workspace
-    step([$class: "WsCleanup"])
 
 }
