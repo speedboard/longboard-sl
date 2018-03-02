@@ -1,6 +1,11 @@
 pipeline {
 
-    agent none
+    agent {
+        docker {
+            image("node:alpine")
+//            args "-v root"
+        }
+    }
 
     options {
         // For example, we"d like to make sure we only keep 10 builds at a time, so
@@ -9,7 +14,7 @@ pipeline {
 
         // And we"d really like to be sure that this build doesn"t hang forever, so
         // let"s time it out after an hour.
-        timeout(time: 25, unit: "MINUTES")
+//        timeout(time: 25, unit: "MINUTES")
     }
 
     // global env variables
@@ -42,33 +47,19 @@ pipeline {
 //        }
 
         stage("Build and install dependencies") {
-            agent {
-                docker {
-                    image("node:alpine")
-                }
-            }
             steps {
                 sh "npm i"
             }
         }
 
         stage("Run unit test") {
-            agent {
-                docker {
-                    image("node:alpine")
-                }
-            }
             steps {
                 sh "npm test"
             }
         }
 
         stage("Code publish") {
-            agent {
-                docker {
-                    image("node:alpine")
-                }
-            }
+
             steps {
 
                 parallel(
@@ -111,11 +102,11 @@ pipeline {
 
         stage("Code analysis") {
 
-//            agent {
-//                docker {
-//                    image "swids/sonar-scanner:2.8"
-//                }
-//            }
+            agent {
+                docker {
+                    image "swids/sonar-scanner:2.8"
+                }
+            }
 
             steps {
 
@@ -129,23 +120,23 @@ pipeline {
 //                                "-Dsonar.branch=${env.BRANCH_NAME} ")
 //                        }
 //                    }
-                script {
-                    scannerHome = tool "SonarScanner"
-                }
-
-                withSonarQubeEnv("SonarQube") {
-                    sh("${scannerHome}/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
-                }
-
+//                script {
+//                    scannerHome = tool "SonarScanner"
+//                }
+//
 //                withSonarQubeEnv("SonarQube") {
-//                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                    sh("${scannerHome}/bin/sonar-scanner " +
 //                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
 //                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
 //                        "-Dsonar.branch=${env.BRANCH_NAME} ")
 //                }
+
+                withSonarQubeEnv("SonarQube") {
+                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                }
 
             }
 
