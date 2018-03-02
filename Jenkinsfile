@@ -9,13 +9,11 @@ pipeline {
     stages {
 
         stage("Teste") {
-            node {
 
-                stage("Checkout") {
-                    checkout(scm)
-                }
+            steps {
+                node {
 
-                stage("Approval deployment") {
+
                     parallel(
                         dev: {
                             if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
@@ -35,9 +33,9 @@ pipeline {
                         }
                     )
                 }
-
             }
         }
+
     }
 
 }
