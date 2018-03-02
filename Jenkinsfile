@@ -7,7 +7,6 @@ env.CI = true
 
 pipeline {
 
-
     agent {
         docker {
             image("node:alpine")
@@ -46,6 +45,53 @@ pipeline {
             steps {
                 sh "npm i"
             }
+        }
+
+        stage("Run unit test") {
+            sh "npm test"
+        }
+
+        stage("Code analysis") {
+            steps {
+                parallel(
+                    coveralls: {
+
+                        sh "npm run coverage"
+
+                        publishHTML target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll              : true,
+                            reportDir            : "coverage",
+                            reportFiles          : "index.html",
+                            reportName           : "RCov Report",
+                            reportTitles         : "Coverage"
+                        ]
+
+                    },
+                    cobertura: {
+
+                        step([
+                            $class                    : "CoberturaPublisher",
+                            coberturaReportFile       : "**/**coverage.xml",
+                            conditionalCoverageTargets: "70, 0, 0",
+                            lineCoverageTargets       : "80, 0, 0",
+                            methodCoverageTargets     : "80, 0, 0",
+                            sourceEncoding            : "UTF_8",
+                            autoUpdateHealth          : false,
+                            autoUpdateStability       : false,
+                            failUnhealthy             : false,
+                            failUnstable              : false,
+                            zoomCoverageChart         : true,
+                            maxNumberOfBuilds         : 0
+                        ])
+
+                    },
+
+                )
+
+            }
+
         }
 
         stage("Development deploy approval") {

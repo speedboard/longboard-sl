@@ -7,6 +7,9 @@ import gulp from 'gulp';
 import path from 'path';
 import del from 'del';
 
+import sonarqube from 'sonarqube-scanner';
+
+
 // Clean up dist and coverage directory
 gulp.task('clean', () => {
     del.sync([
@@ -66,6 +69,16 @@ gulp.task('start', ['clean', 'copy', 'compile'], () => {
         script: path.join('dist', 'server.js'),
         ignore: ['node_modules/**/*.js', 'dist/**/*.js']
     })
+});
+
+gulp.task('sonar', function(callback) {
+    sonarqube({
+        serverUrl : "https://sonarcloud.io",
+        token : "05eb7db28804f319bb559685582baa3edcb7f289",
+        options : {
+            "sonar.organization": "speedboard"
+        }
+    }, callback);
 });
 
 // default task: clean dist, compile js files and copy non-js files.
