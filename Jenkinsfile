@@ -59,7 +59,9 @@ pipeline {
         }
 
         stage("Code publish") {
+
             steps {
+
                 parallel(
                     cobertura: {
 
@@ -100,7 +102,7 @@ pipeline {
 
         stage("Code analysis") {
 
-            agent none
+            agent any
 
             steps {
 
@@ -121,7 +123,7 @@ pipeline {
 
         stage("Code quality") {
 
-            agent none
+            agent any
 
             steps {
 
