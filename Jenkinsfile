@@ -1,10 +1,6 @@
 pipeline {
 
-    agent {
-        docker {
-            image("node:alpine").inside("-u root")
-        }
-    }
+    agent none
 
     options {
         // For example, we"d like to make sure we only keep 10 builds at a time, so
@@ -20,8 +16,8 @@ pipeline {
     environment {
         COVERALLS_REPO_TOKEN = "oo4QtcamdeOkH2aijnDfFjeyS79CQHLnC"
         DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
-        RSA_PRIVATE_KEY = "longboard-private.pem"
-        RSA_PUBLIC_KEY = "longboard-public.pem"
+        RSA_PRIVATE_KEY = "/home/iqueiroz/aplicativos/workspace/ismael/longboard-sl/longboard-private.pem"
+        RSA_PUBLIC_KEY = "/home/iqueiroz/aplicativos/workspace/ismael/longboard-sl/longboard-public.pem"
         DATABASE_NAME = "speedboard"
         AWS_ECR_DISABLE_CACHE = true
         AWS_ECR_LOGIN = true
@@ -36,29 +32,43 @@ pipeline {
 //            }
 //        }
 
-        stage("Generate RSA") {
-            steps {
-                sh "apk add --update --no-cache openssl"
-                sh "openssl genrsa 4096 -aes256 > longboard.pem"
-                sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
-                sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
-            }
-        }
+//        stage("Generate RSA") {
+//            steps {
+//                sh "apk add --update --no-cache openssl"
+//                sh "openssl genrsa 4096 -aes256 > longboard.pem"
+//                sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
+//                sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
+//            }
+//        }
 
         stage("Build and install dependencies") {
+            agent {
+                docker {
+                    image("node:alpine")
+                }
+            }
             steps {
                 sh "npm i"
             }
         }
 
         stage("Run unit test") {
+            agent {
+                docker {
+                    image("node:alpine")
+                }
+            }
             steps {
                 sh "npm test"
             }
         }
 
         stage("Code publish") {
-
+            agent {
+                docker {
+                    image("node:alpine")
+                }
+            }
             steps {
 
                 parallel(
@@ -101,11 +111,11 @@ pipeline {
 
         stage("Code analysis") {
 
-            agent {
-                docker {
-                    image "swids/sonar-scanner:2.8"
-                }
-            }
+//            agent {
+//                docker {
+//                    image "swids/sonar-scanner:2.8"
+//                }
+//            }
 
             steps {
 
@@ -124,11 +134,18 @@ pipeline {
                 }
 
                 withSonarQubeEnv("SonarQube") {
-                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                    sh("${scannerHome}/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                         "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
                         "-Dsonar.branch=${env.BRANCH_NAME} ")
                 }
+
+//                withSonarQubeEnv("SonarQube") {
+//                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                }
 
             }
 
