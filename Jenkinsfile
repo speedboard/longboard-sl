@@ -13,7 +13,7 @@ pipeline {
 
         // And we"d really like to be sure that this build doesn"t hang forever, so
         // let"s time it out after an hour.
-//        timeout(time: 25, unit: "MINUTES")
+        timeout(time: 25, unit: "MINUTES")
     }
 
     // global env variables
@@ -92,14 +92,16 @@ pipeline {
 
         stage("Code analysis") {
 
-            agent {
-                docker {
-                    image "ciricihq/gitlab-sonar-scanner"
-                }
-            }
+//            agent {
+//                docker {
+//                    image "ciricihq/gitlab-sonar-scanner"
+//                }
+//            }
 
             steps {
-
+                withSonarQubeEnv("SonarQube") {
+                    sh "npm run sonar"
+                }
 //                node {
 //
 //                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
@@ -121,15 +123,15 @@ pipeline {
 //                        "-Dsonar.branch=${env.BRANCH_NAME} ")
 //                }
 
-                sh "pwd"
-                sh "ls -laht"
-
-                withSonarQubeEnv("SonarQube") {
-                    sh("sonar-scanner-run.sh " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
-                }
+//                sh "pwd"
+//                sh "ls -laht"
+//
+//                withSonarQubeEnv("SonarQube") {
+//                    sh("sonar-scanner-run.sh " +
+//                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                }
 
             }
 
