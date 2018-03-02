@@ -96,7 +96,11 @@ pipeline {
 
         stage("Code analysis") {
 
-            agent any
+            agent {
+                docker {
+                    image "swids/sonar-scanner:2.8"
+                }
+            }
 
             steps {
 
@@ -105,7 +109,7 @@ pipeline {
                 }
 
                 withSonarQubeEnv("SonarQube") {
-                    sh("${scannerHome}/bin/sonar-scanner " +
+                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                         "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
                         "-Dsonar.branch=${env.BRANCH_NAME} ")
@@ -116,8 +120,6 @@ pipeline {
         }
 
         stage("Code quality") {
-
-            agent any
 
             steps {
 
