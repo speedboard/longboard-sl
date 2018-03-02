@@ -1,11 +1,6 @@
 pipeline {
 
-    agent {
-        docker {
-            image("node:alpine")
-            args "-u root"
-        }
-    }
+    agent none
 
     options {
         // For example, we"d like to make sure we only keep 10 builds at a time, so
@@ -38,27 +33,61 @@ pipeline {
         }
 
         stage("Generate RSA") {
+
+            agent {
+                docker {
+                    image("node:alpine")
+                    args "-u root"
+                }
+            }
+
             steps {
                 sh "apk add --update --no-cache openssl"
                 sh "openssl genrsa 4096 -aes256 > longboard.pem"
                 sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
                 sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
             }
+
         }
 
         stage("Build and install dependencies") {
+
+            agent {
+                docker {
+                    image("node:alpine")
+                    args "-u root"
+                }
+            }
+
             steps {
                 sh "npm i"
             }
+
         }
 
         stage("Run unit test") {
+
+            agent {
+                docker {
+                    image("node:alpine")
+                    args "-u root"
+                }
+            }
+
             steps {
                 sh "npm test"
             }
+
         }
 
         stage("Code publish") {
+
+            agent {
+                docker {
+                    image("node:alpine")
+                    args "-u root"
+                }
+            }
 
             steps {
 
