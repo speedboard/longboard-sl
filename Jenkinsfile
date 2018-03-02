@@ -17,10 +17,10 @@ node {
                 }
             },
             qa: {
-                error 'FAIL'
+
             },
             uat: {
-                error 'FAIL'
+
             }
         )
     }
