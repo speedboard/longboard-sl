@@ -100,9 +100,7 @@ pipeline {
 
         stage("Code analysis") {
 
-            agent {
-                none
-            }
+            agent none
 
             steps {
 
@@ -123,9 +121,7 @@ pipeline {
 
         stage("Code quality") {
 
-            agent {
-                none
-            }
+            agent none
 
             steps {
 
