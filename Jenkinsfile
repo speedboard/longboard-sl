@@ -17,15 +17,10 @@ node {
                 }
             },
             qa: {
-                when {
-                    // check if branch is master
-                    branch "master"
-                }
+                currentBuild.result = 'UNSTABLE'
             },
             uat: {
-                when {
-                    branch "master"
-                }
+                currentBuild.result = 'UNSTABLE'
             }
         )
     }
