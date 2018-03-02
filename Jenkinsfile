@@ -98,7 +98,7 @@ pipeline {
 //                }
 //            }
 
-            agent none
+            agent any
 
             steps {
                 withSonarQubeEnv("SonarQube") {
