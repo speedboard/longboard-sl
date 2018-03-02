@@ -17,10 +17,10 @@ node {
                 }
             },
             qa: {
-                currentBuild.result = 'UNSTABLE'
+                error 'FAIL'
             },
             uat: {
-                currentBuild.result = 'UNSTABLE'
+                error 'FAIL'
             }
         )
     }
