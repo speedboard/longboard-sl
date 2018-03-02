@@ -1,6 +1,6 @@
 pipeline {
 
-    agent any
+    agent { dockerfile true }
 
     options {
         // For example, we"d like to make sure we only keep 10 builds at a time, so

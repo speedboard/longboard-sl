@@ -76,7 +76,7 @@ gulp.task("sonar", function (callback) {
         serverUrl: process.env["SONAR_HOST_URL"],
         token: process.env["SONAR_AUTH_TOKEN"],
         options: {
-            "sonar.organization": "speedboard",
+            // "sonar.organization": "speedboard",
             "sonar.branch": process.env["BRANCH_NAME"]
         }
     }, callback);
