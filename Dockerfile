@@ -6,8 +6,9 @@ ENV DATABASE_NAME "speedboard"
 # install openssl
 RUN apk update
 RUN apk upgrade
-RUN apk add --update git unzip
-RUN apk add --update git unzip
+RUN apk add --update git
+RUN apk add --update zip
+RUN apk add --update unzip
 RUN apk add --update openssl
 
 ## Default to UTF-8 file.encoding
