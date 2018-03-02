@@ -11,6 +11,7 @@
         "start": "gulp start",
         "test": "nyc ./node_modules/.bin/mocha",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
+        "junit": "nyc ./node_modules/.bin/mocha --reporter=mocha-junit-reporter",
         "sonar": "nyc ./node_modules/.bin/mocha --reporter=mocha-sonarqube-reporter"
     },
     "nyc": {

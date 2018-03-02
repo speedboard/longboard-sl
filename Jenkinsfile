@@ -1,11 +1,10 @@
 pipeline {
 
     agent {
-//        docker {
-//            image("node:alpine")
-//            args "-u root"
-//        }
-        none
+        docker {
+            image("node:alpine")
+            args "-u root"
+        }
     }
 
     options {
@@ -38,74 +37,113 @@ pipeline {
             }
         }
 
-        docker.image("node:alpine").inside("-u root") {
-
-            stage("Generate RSA") {
-                steps {
-                    sh "apk add --update --no-cache openssl"
-                    sh "openssl genrsa 4096 -aes256 > longboard.pem"
-                    sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
-                    sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
-                }
+        stage("Generate RSA") {
+            steps {
+                sh "apk add --update --no-cache openssl"
+                sh "openssl genrsa 4096 -aes256 > longboard.pem"
+                sh "openssl pkcs8 -topk8 -inform PEM -outform PEM -in longboard.pem -out longboard-private.pem -nocrypt"
+                sh "openssl rsa -in longboard-private.pem -pubout -outform PEM -out longboard-public.pem"
             }
+        }
 
-            stage("Build and install dependencies") {
-                steps {
-                    sh "npm i"
-                }
+        stage("Build and install dependencies") {
+            steps {
+                sh "npm i"
             }
+        }
 
-            stage("Run unit test") {
-                steps {
-                    sh "npm test"
-                }
+        stage("Run unit test") {
+            steps {
+                sh "npm test"
+            }
+        }
+
+        stage("Code publish") {
+            steps {
+                parallel(
+                    cobertura: {
+
+                        sh "npm run coverage"
+
+                        step([
+                            $class                    : "CoberturaPublisher",
+                            coberturaReportFile       : "**/**coverage.xml",
+                            conditionalCoverageTargets: "70, 0, 0",
+                            lineCoverageTargets       : "80, 0, 0",
+                            methodCoverageTargets     : "80, 0, 0",
+                            sourceEncoding            : "UTF_8",
+                            autoUpdateHealth          : false,
+                            autoUpdateStability       : false,
+                            failUnhealthy             : false,
+                            failUnstable              : false,
+                            zoomCoverageChart         : true,
+                            maxNumberOfBuilds         : 0
+                        ])
+
+                    },
+                    junit: {
+
+                        sh "npm run junit"
+
+                        // Publish test"s
+                        step([
+                            $class     : "JUnitResultArchiver",
+                            testResults: "**/**junit.xml"
+                        ])
+
+                    }
+                )
+
             }
 
         }
 
-//        stage("Code analysis") {
-//            steps {
-//                parallel(
-//                    sonar: {
-//
-//                        script {
-//                            scannerHome = tool "SonarScanner"
-//                        }
-//
-//                        withSonarQubeEnv("SonarQube") {
-//                            sh("${scannerHome}/bin/sonar-scanner " +
-//                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-//                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-//                                "-Dsonar.branch=${env.BRANCH_NAME} ")
-//                        }
-//
-//                    },
-//                    cobertura: {
-//
-//                        sh "npm run coverage"
-//
-//                        step([
-//                            $class                    : "CoberturaPublisher",
-//                            coberturaReportFile       : "**/**coverage.xml",
-//                            conditionalCoverageTargets: "70, 0, 0",
-//                            lineCoverageTargets       : "80, 0, 0",
-//                            methodCoverageTargets     : "80, 0, 0",
-//                            sourceEncoding            : "UTF_8",
-//                            autoUpdateHealth          : false,
-//                            autoUpdateStability       : false,
-//                            failUnhealthy             : false,
-//                            failUnstable              : false,
-//                            zoomCoverageChart         : true,
-//                            maxNumberOfBuilds         : 0
-//                        ])
-//
-//                    },
-//
-//                )
-//
-//            }
-//
-//        }
+        stage("Code analysis") {
+
+            agent {
+                none
+            }
+
+            steps {
+
+                script {
+                    scannerHome = tool "SonarScanner"
+                }
+
+                withSonarQubeEnv("SonarQube") {
+                    sh("${scannerHome}/bin/sonar-scanner " +
+                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                }
+
+            }
+
+        }
+
+        stage("Code quality") {
+
+            agent {
+                none
+            }
+
+            steps {
+
+                script {
+
+                    timeout(time: 1, unit: "HOURS") {
+                        def qg = waitForQualityGate()
+                        if (qg.status != "OK") {
+                            error("Pipeline aborted due to quality gate failure: ${qg.status}")
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
 
         stage("Development deploy approval") {
 
