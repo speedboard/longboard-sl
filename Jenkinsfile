@@ -98,6 +98,8 @@ pipeline {
 //                }
 //            }
 
+            agent none
+
             steps {
                 withSonarQubeEnv("SonarQube") {
                     sh "npm run sonar"
