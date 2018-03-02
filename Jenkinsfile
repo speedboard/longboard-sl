@@ -104,6 +104,7 @@ node {
     }
 
     stage("Development deploy approval") {
+
         if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
             timeout(time: 3, unit: "MINUTES") {
                 //input message:"Approve deployment?", submitter: "it-ops"
@@ -113,6 +114,24 @@ node {
                 echo "build  ${env.BUILD_NUMBER} versions..."
             }
         }
+
+    }
+
+    stage('QA release approval and publish artifact') {
+
+        when {
+            // check if branch is master
+            branch 'master'
+        }
+
+        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+            timeout(time: 3, unit: 'MINUTES') {
+                //input message:'Approve deployment?', submitter: 'it-ops'
+                input message: 'Approve deployment to QA?'
+            }
+
+        }
+
     }
 
 //    stage("Conteiner build") {
