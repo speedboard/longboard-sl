@@ -28,7 +28,7 @@ pipeline {
             agent {
                 docker {
                     image("node:alpine")
-                    args '-u jenkins:jenkins'
+                    args '-u root:root'
                 }
             }
             steps {
@@ -95,6 +95,12 @@ pipeline {
 
         }
 
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
     }
 
 }
