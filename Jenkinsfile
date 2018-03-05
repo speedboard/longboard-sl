@@ -130,14 +130,14 @@ pipeline {
             agent {
                 docker {
                     image "swids/sonar-scanner"
-                    args "--entrypoint='' --link=sonarqube -e SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}"
+                    args "--entrypoint='' --link=sonarqube -e SONAR_SCANNER_VERSION=${env.SONAR_SCANNER_VERSION}"
                 }
             }
 
             steps {
 
                 withSonarQubeEnv("SonarQube") {
-                    sh("/sonar-scanner/sonar-scanner-${SONAR_SCANNER_VERSION}/bin/sonar-scanner " +
+                    sh("/sonar-scanner/sonar-scanner-${env.SONAR_SCANNER_VERSION}/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                         "-Dsonar.host.url=${env.SONAR_HOST_URL}:9000 " +
                         "-Dsonar.branch=${env.BRANCH_NAME} ")
