@@ -1,6 +1,13 @@
 pipeline {
 
-    agent any
+//    agent any
+
+    agent {
+        docker {
+            image("node:alpine")
+            args '-u root:root'
+        }
+    }
 
     options {
 
@@ -25,12 +32,12 @@ pipeline {
         }
 
         stage("Build and install dependencies") {
-            agent {
-                docker {
-                    image("node:alpine")
-                    args '-u root:root'
-                }
-            }
+//            agent {
+//                docker {
+//                    image("node:alpine")
+//                    args '-u root:root'
+//                }
+//            }
             steps {
                 sh "npm -v"
             }
