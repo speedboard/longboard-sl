@@ -22,6 +22,7 @@ pipeline {
         DATABASE_URL = "mongodb://172.17.0.1:27017/speedboard"
         RSA_PRIVATE_KEY = "longboard-private.pem"
         RSA_PUBLIC_KEY = "longboard-public.pem"
+        SONAR_SCANNER_VERSION = "3.0.3.778"
         DATABASE_NAME = "speedboard"
         AWS_ECR_DISABLE_CACHE = true
         AWS_ECR_LOGIN = true
@@ -31,48 +32,49 @@ pipeline {
     stages {
 
         stage("Checkout") {
+
             agent {
                 docker {
                     image("node:alpine")
                 }
             }
+
             steps {
                 checkout(scm)
             }
+
         }
 
         stage("Install dependencies") {
+
             agent {
                 docker {
                     image("node:alpine")
                 }
             }
+
             steps {
 
                 sh "npm install"
 
-//                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
-
             }
+
         }
 
         stage("Run unit test") {
+
             agent {
                 docker {
                     image("node:alpine")
                 }
             }
-            steps {
 
-//                dir("${env.BUILD_NUMBER}") {
-//                    unstash "${env.BUILD_NUMBER}"
-//                }
+            steps {
 
                 sh "npm test"
 
-//                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
-
             }
+
         }
 
         stage("Code publish") {
@@ -86,10 +88,6 @@ pipeline {
             steps {
                 parallel(
                     cobertura: {
-
-//                        dir("${env.BUILD_NUMBER}") {
-//                            unstash "${env.BUILD_NUMBER}"
-//                        }
 
                         sh "npm run coverage"
 
@@ -112,10 +110,6 @@ pipeline {
                     },
                     junit: {
 
-//                        dir("${env.BUILD_NUMBER}") {
-//                            unstash "${env.BUILD_NUMBER}"
-//                        }
-
                         sh "npm run junit"
 
                         // Publish test"s
@@ -135,34 +129,18 @@ pipeline {
 
             agent {
                 docker {
-                    image "swids/sonar-scanner:2.8"
-                    args "--entrypoint='' --link=sonarqube"
+                    image "swids/sonar-scanner"
+                    args "--entrypoint='' --link=sonarqube -e SONAR_SCANNER_VERSION=${SONAR_SCANNER_VERSION}"
                 }
             }
 
             steps {
-//
-//                dir("${env.BUILD_NUMBER}") {
-//                    unstash "${env.BUILD_NUMBER}"
-//                }
 
                 withSonarQubeEnv("SonarQube") {
-                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                    sh("/sonar-scanner/sonar-scanner-${SONAR_SCANNER_VERSION}/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}:9000  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} " +
-                        "-Dsonar.projectVersion=1.0.0-alpha.1 " +
-                        "-Dsonar.projectName=longboard-sl " +
-                        "-Dsonar.projectKey=longboard " +
-                        "-Dsonar.sources=. " +
-                        "-Dsonar.tests=. " +
-                        "-Dsonar.sourceEncoding=UTF-8 " +
-                        "-Dsonar.test.inclusions=**/**.spec.ts " +
-                        "-Dsonar.ts.tslintconfigpath=tslint.json " +
-                        "-Dsonar.typescript.lcov.reportPaths=coverage/lcov.info " +
-                        "-Dsonar.exclusions=**/node_modules/**,**/*.js,**/*.html " +
-                        "-Dsonar.testExecutionReportPaths=coverage/test-xunit.xml "
-                    )
+                        "-Dsonar.host.url=${env.SONAR_HOST_URL}:9000 " +
+                        "-Dsonar.branch=${env.BRANCH_NAME} ")
                 }
 
             }
