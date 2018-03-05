@@ -41,8 +41,6 @@ pipeline {
                 sh "npm install"
 
                 stash includes: "**/*", name: "${env.BUILD_NUMBER}"
-//                stash includes: "coverage/**", name: "coverage"
-//                stash includes: ".nyc_output/**", name: ".nyc_output"
 
             }
         }
@@ -59,51 +57,54 @@ pipeline {
                 sh "npm test"
             }
         }
-//        stage("Code publish") {
-//            agent {
-//                docker {
-//                    image("node:alpine")
-//                }
-//            }
-//            steps {
-//                parallel(
-//                    cobertura: {
-//
-//                        sh "npm run coverage"
-//
-//                        // Publish coverage
-//                        step([
-//                            $class                    : "CoberturaPublisher",
-//                            coberturaReportFile       : "**/**coverage.xml",
-//                            conditionalCoverageTargets: "70, 0, 0",
-//                            lineCoverageTargets       : "80, 0, 0",
-//                            methodCoverageTargets     : "80, 0, 0",
-//                            sourceEncoding            : "UTF_8",
-//                            autoUpdateHealth          : false,
-//                            autoUpdateStability       : false,
-//                            failUnhealthy             : false,
-//                            failUnstable              : false,
-//                            zoomCoverageChart         : true,
-//                            maxNumberOfBuilds         : 0
-//                        ])
-//
-//                    },
-//                    junit: {
-//
-//                        sh "npm run junit"
-//
-//                        // Publish test"s
-//                        step([
-//                            $class     : "JUnitResultArchiver",
-//                            testResults: "**/**junit.xml"
-//                        ])
-//
-//                    }
-//                )
-//
-//            }
-//
-//        }
+        stage("Code publish") {
+            agent {
+                docker {
+                    image("node:alpine")
+                }
+            }
+            steps {
+                dir("${env.BUILD_NUMBER}") {
+                    unstash "${env.BUILD_NUMBER}"
+                }
+                parallel(
+                    cobertura: {
+
+                        sh "npm run coverage"
+
+                        // Publish coverage
+                        step([
+                            $class                    : "CoberturaPublisher",
+                            coberturaReportFile       : "**/**coverage.xml",
+                            conditionalCoverageTargets: "70, 0, 0",
+                            lineCoverageTargets       : "80, 0, 0",
+                            methodCoverageTargets     : "80, 0, 0",
+                            sourceEncoding            : "UTF_8",
+                            autoUpdateHealth          : false,
+                            autoUpdateStability       : false,
+                            failUnhealthy             : false,
+                            failUnstable              : false,
+                            zoomCoverageChart         : true,
+                            maxNumberOfBuilds         : 0
+                        ])
+
+                    },
+                    junit: {
+
+                        sh "npm run junit"
+
+                        // Publish test"s
+                        step([
+                            $class     : "JUnitResultArchiver",
+                            testResults: "**/**junit.xml"
+                        ])
+
+                    }
+                )
+
+            }
+
+        }
 
 //        stage("Code analysis") {
 //
