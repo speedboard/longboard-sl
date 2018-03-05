@@ -150,7 +150,19 @@ pipeline {
                     sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
                         "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                         "-Dsonar.host.url=${env.SONAR_HOST_URL}:9000  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+                        "-Dsonar.branch=${env.BRANCH_NAME} " +
+                        "-Dsonar.projectVersion=1.0.0-alpha.1 " +
+                        "-Dsonar.projectName=longboard-sl " +
+                        "-Dsonar.projectKey=longboard " +
+                        "-Dsonar.sources=. " +
+                        "-Dsonar.tests=. " +
+                        "-Dsonar.sourceEncoding=UTF-8 " +
+                        "-Dsonar.test.inclusions=**/**.spec.ts " +
+                        "-Dsonar.ts.tslintconfigpath=tslint.json " +
+                        "-Dsonar.typescript.lcov.reportPaths=coverage/lcov.info " +
+                        "-Dsonar.exclusions=**/node_modules/**,**/*.js,**/*.html " +
+                        "-Dsonar.testExecutionReportPaths=coverage/test-xunit.xml "
+                    )
                 }
 
             }
