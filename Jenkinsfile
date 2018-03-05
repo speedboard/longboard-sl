@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        stage("Build and install dependencies") {
+        stage("Version nodejs:9") {
             agent {
                 docker {
                     image("node:alpine")
@@ -35,7 +35,7 @@ pipeline {
             }
         }
 
-        stage("Build and install dependencies") {
+        stage("Version nodejs:8") {
             agent {
                 docker {
                     image("node:8-alpine")
@@ -95,5 +95,4 @@ pipeline {
 
     }
 
-    }
 }
