@@ -44,6 +44,7 @@ pipeline {
 
             }
         }
+
         stage("Run unit test") {
             agent {
                 docker {
@@ -51,12 +52,18 @@ pipeline {
                 }
             }
             steps {
+
                 dir("${env.BUILD_NUMBER}") {
                     unstash "${env.BUILD_NUMBER}"
                 }
+
                 sh "npm test"
+
+                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
+
             }
         }
+
         stage("Code publish") {
             agent {
                 docker {
@@ -64,9 +71,11 @@ pipeline {
                 }
             }
             steps {
+
                 dir("${env.BUILD_NUMBER}") {
                     unstash "${env.BUILD_NUMBER}"
                 }
+
                 parallel(
                     cobertura: {
 
