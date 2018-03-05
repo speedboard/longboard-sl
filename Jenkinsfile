@@ -4,7 +4,7 @@ pipeline {
 
     options {
 
-        //skipDefaultCheckout()
+//        skipDefaultCheckout()
 
         // For example, we"d like to make sure we only keep 10 builds at a time, so
         // we don"t fill up our storage!
@@ -41,9 +41,9 @@ pipeline {
                 sh "npm install"
                 sh "npm test"
 
-                stash includes: 'node_modules', name: 'node_modules'
-                stash includes: 'coverage', name: 'coverage'
-                stash includes: '.nyc_output', name: '.nyc_output'
+                stash includes: 'node_modules/**', name: 'node_modules'
+                stash includes: 'coverage/**', name: 'coverage'
+                stash includes: '.nyc_output/**', name: '.nyc_output'
 
             }
         }
