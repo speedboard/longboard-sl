@@ -24,25 +24,25 @@ pipeline {
             }
         }
 
-        stage("Version nodejs:9") {
+        stage("Build and install dependencies") {
             agent {
                 docker {
                     image("node:alpine")
                 }
             }
             steps {
-                sh "npm -v"
+                sh "npm i"
             }
         }
 
-        stage("Version nodejs:8") {
+        stage("Run unit test") {
             agent {
                 docker {
                     image("node:8-alpine")
                 }
             }
             steps {
-                sh "npm -v"
+                sh "npm test"
             }
         }
 
