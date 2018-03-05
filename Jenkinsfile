@@ -1,8 +1,16 @@
 pipeline {
 
-    agent { dockerfile true }
+//    agent { dockerfile true }
+    agent {
+        docker {
+            image("node:alpine")
+        }
+    }
 
     options {
+
+        skipDefaultCheckout()
+
         // For example, we"d like to make sure we only keep 10 builds at a time, so
         // we don"t fill up our storage!
         buildDiscarder(logRotator(numToKeepStr: "2"))
@@ -10,6 +18,7 @@ pipeline {
         // And we"d really like to be sure that this build doesn"t hang forever, so
         // let"s time it out after an hour.
         timeout(time: 25, unit: "MINUTES")
+
     }
 
     // global env variables
@@ -26,11 +35,11 @@ pipeline {
 
     stages {
 
-//        stage("Checkout") {
-//            steps {
-//                checkout(scm)
-//            }
-//        }
+        stage("Checkout") {
+            steps {
+                checkout(scm)
+            }
+        }
 
         stage("Build and install dependencies") {
 //            agent {
@@ -102,18 +111,18 @@ pipeline {
 
         stage("Code analysis") {
 
-//            agent {
-//                docker {
-//                    image "swids/sonar-scanner:2.8"
-//                }
-//            }
+            agent {
+                docker {
+                    image "swids/sonar-scanner:2.8"
+                }
+            }
 
 //            agent any
 
             steps {
-                withSonarQubeEnv("SonarQube") {
-                    sh "npm run sonar"
-                }
+//                withSonarQubeEnv("SonarQube") {
+//                    sh "npm run sonar"
+//                }
 
 //                node {
 //                    sh 'echo \'teste\''
@@ -127,12 +136,12 @@ pipeline {
 //                node {
 //
 //                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
-//                        withSonarQubeEnv("SonarQube") {
-//                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-//                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-//                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-//                                "-Dsonar.branch=${env.BRANCH_NAME} ")
-//                        }
+                        withSonarQubeEnv("SonarQube") {
+                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+                                "-Dsonar.branch=${env.BRANCH_NAME} ")
+                        }
 //                    }
 //                script {
 //                    scannerHome = tool "SonarScanner"
@@ -228,10 +237,10 @@ pipeline {
 
     }
 
-    post {
-        always {
-            cleanWs()
-        }
-    }
+//    post {
+//        always {
+//            cleanWs()
+//        }
+//    }
 
 }
