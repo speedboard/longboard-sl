@@ -28,6 +28,7 @@ pipeline {
             agent {
                 docker {
                     image("node:alpine")
+                    args '-u jenkins:jenkins'
                 }
             }
             steps {
