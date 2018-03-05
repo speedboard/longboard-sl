@@ -4,7 +4,7 @@ pipeline {
 
     options {
 
-//        skipDefaultCheckout()
+        skipDefaultCheckout()
 
         // For example, we"d like to make sure we only keep 10 builds at a time, so
         // we don"t fill up our storage!
@@ -30,7 +30,7 @@ pipeline {
 
     stages {
 
-        stage("Build, install and testing") {
+        stage("Install dependencies") {
             agent {
                 docker {
                     image("node:alpine")
@@ -39,60 +39,71 @@ pipeline {
             steps {
 
                 sh "npm install"
-                sh "npm test"
 
-                stash includes: 'node_modules/**', name: 'node_modules'
-                stash includes: 'coverage/**', name: 'coverage'
-                stash includes: '.nyc_output/**', name: '.nyc_output'
+                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
+//                stash includes: "coverage/**", name: "coverage"
+//                stash includes: ".nyc_output/**", name: ".nyc_output"
 
             }
         }
-
-        stage("Code publish") {
+        stage("Run unit test") {
             agent {
                 docker {
                     image("node:alpine")
                 }
             }
             steps {
-                parallel(
-                    cobertura: {
-
-                        sh "npm run coverage"
-
-                        // Publish coverage
-                        step([
-                            $class                    : "CoberturaPublisher",
-                            coberturaReportFile       : "**/**coverage.xml",
-                            conditionalCoverageTargets: "70, 0, 0",
-                            lineCoverageTargets       : "80, 0, 0",
-                            methodCoverageTargets     : "80, 0, 0",
-                            sourceEncoding            : "UTF_8",
-                            autoUpdateHealth          : false,
-                            autoUpdateStability       : false,
-                            failUnhealthy             : false,
-                            failUnstable              : false,
-                            zoomCoverageChart         : true,
-                            maxNumberOfBuilds         : 0
-                        ])
-
-                    },
-                    junit: {
-
-                        sh "npm run junit"
-
-                        // Publish test"s
-                        step([
-                            $class     : "JUnitResultArchiver",
-                            testResults: "**/**junit.xml"
-                        ])
-
-                    }
-                )
-
+                dir("${env.BUILD_NUMBER}") {
+                    unstash "${env.BUILD_NUMBER}"
+                }
+                sh "npm test"
             }
-
         }
+//        stage("Code publish") {
+//            agent {
+//                docker {
+//                    image("node:alpine")
+//                }
+//            }
+//            steps {
+//                parallel(
+//                    cobertura: {
+//
+//                        sh "npm run coverage"
+//
+//                        // Publish coverage
+//                        step([
+//                            $class                    : "CoberturaPublisher",
+//                            coberturaReportFile       : "**/**coverage.xml",
+//                            conditionalCoverageTargets: "70, 0, 0",
+//                            lineCoverageTargets       : "80, 0, 0",
+//                            methodCoverageTargets     : "80, 0, 0",
+//                            sourceEncoding            : "UTF_8",
+//                            autoUpdateHealth          : false,
+//                            autoUpdateStability       : false,
+//                            failUnhealthy             : false,
+//                            failUnstable              : false,
+//                            zoomCoverageChart         : true,
+//                            maxNumberOfBuilds         : 0
+//                        ])
+//
+//                    },
+//                    junit: {
+//
+//                        sh "npm run junit"
+//
+//                        // Publish test"s
+//                        step([
+//                            $class     : "JUnitResultArchiver",
+//                            testResults: "**/**junit.xml"
+//                        ])
+//
+//                    }
+//                )
+//
+//            }
+//
+//        }
 
 //        stage("Code analysis") {
 //
