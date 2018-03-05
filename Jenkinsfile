@@ -4,7 +4,7 @@ pipeline {
 
     options {
 
-        skipDefaultCheckout()
+        //skipDefaultCheckout()
 
         // For example, we"d like to make sure we only keep 10 builds at a time, so
         // we don"t fill up our storage!
@@ -18,11 +18,11 @@ pipeline {
 
     stages {
 
-        stage("Checkout") {
-            steps {
-                checkout(scm)
-            }
-        }
+//        stage("Checkout") {
+//            steps {
+//                checkout(scm)
+//            }
+//        }
 
         stage("Build and install dependencies") {
             agent {
@@ -31,7 +31,7 @@ pipeline {
                 }
             }
             steps {
-                sh "npm i"
+                sh "npm -v"
             }
         }
 
@@ -42,6 +42,7 @@ pipeline {
                 }
             }
             steps {
+                sh "npm i"
                 sh "npm test"
             }
         }
