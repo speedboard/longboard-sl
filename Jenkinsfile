@@ -6,15 +6,11 @@ node {
     }
 
     stage('Full Build') {
-        stageHasRun {
-            branch "master"
-        }
+        tep([$class: "stageHasRun"])
     }
 
     stage('Incremental Build') {
-        stageHasRun {
-            branch "master"
-        }
+        step([$class: "stageHasRun"])
     }
 
 }
