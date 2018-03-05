@@ -137,6 +137,8 @@ pipeline {
 //                node {
 //
 //                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
+                        sh "pwd"
+                        sh "ls -la"
                         withSonarQubeEnv("SonarQube") {
                             sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
                                 "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
