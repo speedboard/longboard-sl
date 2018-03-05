@@ -40,7 +40,7 @@ pipeline {
 
                 sh "npm install"
 
-                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
+//                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
 
             }
         }
@@ -59,7 +59,7 @@ pipeline {
 
                 sh "npm test"
 
-                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
+//                stash includes: "**/*", name: "${env.BUILD_NUMBER}"
 
             }
         }
@@ -76,9 +76,9 @@ pipeline {
                 parallel(
                     cobertura: {
 
-                        dir("${env.BUILD_NUMBER}") {
-                            unstash "${env.BUILD_NUMBER}"
-                        }
+//                        dir("${env.BUILD_NUMBER}") {
+//                            unstash "${env.BUILD_NUMBER}"
+//                        }
 
                         sh "npm run coverage"
 
@@ -101,9 +101,9 @@ pipeline {
                     },
                     junit: {
 
-                        dir("${env.BUILD_NUMBER}") {
-                            unstash "${env.BUILD_NUMBER}"
-                        }
+//                        dir("${env.BUILD_NUMBER}") {
+//                            unstash "${env.BUILD_NUMBER}"
+//                        }
 
                         sh "npm run junit"
 
@@ -129,10 +129,10 @@ pipeline {
             }
 
             steps {
-
-                dir("${env.BUILD_NUMBER}") {
-                    unstash "${env.BUILD_NUMBER}"
-                }
+//
+//                dir("${env.BUILD_NUMBER}") {
+//                    unstash "${env.BUILD_NUMBER}"
+//                }
 
                 withSonarQubeEnv("SonarQube") {
                     sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
