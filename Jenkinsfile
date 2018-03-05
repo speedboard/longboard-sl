@@ -53,9 +53,9 @@ pipeline {
             }
             steps {
 
-                dir("${env.BUILD_NUMBER}") {
-                    unstash "${env.BUILD_NUMBER}"
-                }
+//                dir("${env.BUILD_NUMBER}") {
+//                    unstash "${env.BUILD_NUMBER}"
+//                }
 
                 sh "npm test"
 
