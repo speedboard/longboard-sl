@@ -6,11 +6,11 @@ node {
     }
 
     stage('Full Build') {
-        step([$class: "stageHasRun"])
+        step([$class: "StageHasRunConditionalScript"])
     }
 
     stage('Incremental Build') {
-        step([$class: "stageHasRun"])
+        step([$class: "StageHasRunConditionalScript"])
     }
 
 }
