@@ -113,7 +113,7 @@ pipeline {
 
             agent {
                 docker {
-                    image "8-alpine"
+                    image "node:8-alpine"
                     args "-v ${env.WORKSPACE}:${env.WORKSPACE}"
                 }
             }
@@ -121,9 +121,9 @@ pipeline {
 //            agent any
 
             steps {
-//                withSonarQubeEnv("SonarQube") {
-//                    sh "npm run sonar"
-//                }
+                withSonarQubeEnv("SonarQube") {
+                    sh "npm run sonar"
+                }
 
 //                node {
 //                    sh 'echo \'teste\''
@@ -137,12 +137,12 @@ pipeline {
 //                node {
 //
 //                    docker.image("swids/sonar-scanner:2.8").inside("-u root") {
-                        withSonarQubeEnv("SonarQube") {
-                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                                "-Dsonar.branch=${env.BRANCH_NAME} ")
-                        }
+//                        withSonarQubeEnv("SonarQube") {
+//                            sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                                "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                                "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                                "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                        }
 //                    }
 //                script {
 //                    scannerHome = tool "SonarScanner"
