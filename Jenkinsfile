@@ -1,21 +1,19 @@
 node {
 
-    stages {
 
-        stage("Checkout") {
-            checkout(scm)
+    stage("Checkout") {
+        checkout(scm)
+    }
+
+    stage('Full Build') {
+        stageHasRun {
+            branch "master"
         }
+    }
 
-        stage('Full Build') {
-            when {
-                branch "master"
-            }
-        }
-
-        stage('Incremental Build') {
-            when {
-                branch "master"
-            }
+    stage('Incremental Build') {
+        stageHasRun {
+            branch "master"
         }
     }
 
