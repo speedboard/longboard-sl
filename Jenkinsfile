@@ -65,19 +65,20 @@ pipeline {
         }
 
         stage("Code publish") {
+
             agent {
                 docker {
                     image("node:alpine")
                 }
             }
 
-            dir("${env.BUILD_NUMBER}") {
-                unstash "${env.BUILD_NUMBER}"
-            }
-
             steps {
                 parallel(
                     cobertura: {
+
+                        dir("${env.BUILD_NUMBER}") {
+                            unstash "${env.BUILD_NUMBER}"
+                        }
 
                         sh "npm run coverage"
 
@@ -99,6 +100,10 @@ pipeline {
 
                     },
                     junit: {
+
+                        dir("${env.BUILD_NUMBER}") {
+                            unstash "${env.BUILD_NUMBER}"
+                        }
 
                         sh "npm run junit"
 
