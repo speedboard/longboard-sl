@@ -136,7 +136,7 @@ pipeline {
             agent {
                 docker {
                     image "swids/sonar-scanner:2.8"
-                    args "--entrypoint=''"
+                    args "--entrypoint='' --link=CONTAINER_NAME=sonarqube"
                 }
             }
 
