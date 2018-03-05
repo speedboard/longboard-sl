@@ -4,7 +4,7 @@ pipeline {
 
     options {
 
-        //skipDefaultCheckout()
+        skipDefaultCheckout()
 
         // For example, we"d like to make sure we only keep 10 builds at a time, so
         // we don"t fill up our storage!
@@ -18,11 +18,11 @@ pipeline {
 
     stages {
 
-//        stage("Checkout") {
-//            steps {
-//                checkout(scm)
-//            }
-//        }
+        stage("Checkout") {
+            steps {
+                checkout(scm)
+            }
+        }
 
         stage("Build and install dependencies") {
             agent {
@@ -35,17 +35,17 @@ pipeline {
             }
         }
 
-        stage("Run unit test") {
-            agent {
-                docker {
-                    image("node:8-alpine")
-                }
-            }
-            steps {
-                sh "npm i"
-                sh "npm test"
-            }
-        }
+//        stage("Run unit test") {
+//            agent {
+//                docker {
+//                    image("node:8-alpine")
+//                }
+//            }
+//            steps {
+//                sh "npm i"
+//                sh "npm test"
+//            }
+//        }
 
         stage("Development deploy approval") {
 
