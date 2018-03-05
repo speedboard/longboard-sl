@@ -70,12 +70,12 @@ pipeline {
                     image("node:alpine")
                 }
             }
+
+            dir("${env.BUILD_NUMBER}") {
+                unstash "${env.BUILD_NUMBER}"
+            }
+
             steps {
-
-                dir("${env.BUILD_NUMBER}") {
-                    unstash "${env.BUILD_NUMBER}"
-                }
-
                 parallel(
                     cobertura: {
 
