@@ -1,10 +1,11 @@
 node {
 
-    stage("Checkout") {
-        checkout(scm)
-    }
-
     stages {
+
+        stage("Checkout") {
+            checkout(scm)
+        }
+
         stage('Full Build') {
             when {
                 branch "master"
