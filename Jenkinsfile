@@ -37,8 +37,14 @@ pipeline {
                 }
             }
             steps {
+
                 sh "npm -i"
                 sh "npm test"
+
+                stash includes: 'node_modules', name: 'node_modules'
+                stash includes: 'coverage', name: 'coverage'
+                stash includes: '.nyc_output', name: '.nyc_output'
+
             }
         }
 
@@ -49,10 +55,6 @@ pipeline {
                 }
             }
             steps {
-
-                sh "npm -i"
-                sh "npm test"
-
                 parallel(
                     cobertura: {
 
@@ -92,97 +94,97 @@ pipeline {
 
         }
 
-        stage("Code analysis") {
-
-            agent {
-                docker {
-                    image "swids/sonar-scanner:2.8"
-                }
-            }
-
-            steps {
-
-                sh "npm -i"
-                sh "npm test"
-
-                withSonarQubeEnv("SonarQube") {
-                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
-                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
-                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
-                        "-Dsonar.branch=${env.BRANCH_NAME} ")
-                }
-
-            }
-
-        }
-
-        stage("Code quality") {
-
-            steps {
-
-                script {
-
-                    timeout(time: 1, unit: "HOURS") {
-                        def qg = waitForQualityGate()
-                        if (qg.status != "OK") {
-                            error("Pipeline aborted due to quality gate failure: ${qg.status}")
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        stage("Development deploy approval") {
-
-            steps {
-
-                script {
-
-                    if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-
-                        timeout(time: 3, unit: "MINUTES") {
-                            input message: "Approve deployment?"
-                        }
-
-                        timeout(time: 2, unit: "MINUTES") {
-                            echo "build  ${env.BUILD_NUMBER} versions..."
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        stage("QA release approval and publish artifact") {
-
-            when {
-                branch "master"
-            }
-
-            steps {
-
-                script {
-
-                    if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
-                        timeout(time: 3, unit: "MINUTES") {
-                            //input message:"Approve deployment?", submitter: "it-ops"
-                            input message: "Approve deployment to QA?"
-                        }
-                    }
-
-                }
-
-            }
-
-        }
-
+//        stage("Code analysis") {
+//
+//            agent {
+//                docker {
+//                    image "swids/sonar-scanner:2.8"
+//                }
+//            }
+//
+//            steps {
+//
+//                sh "npm -i"
+//                sh "npm test"
+//
+//                withSonarQubeEnv("SonarQube") {
+//                    sh("/sonar-scanner/sonar-scanner-2.8/bin/sonar-scanner " +
+//                        "-Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
+//                        "-Dsonar.host.url=${env.SONAR_HOST_URL}  " +
+//                        "-Dsonar.branch=${env.BRANCH_NAME} ")
+//                }
+//
+//            }
+//
+//        }
+//
+//        stage("Code quality") {
+//
+//            steps {
+//
+//                script {
+//
+//                    timeout(time: 1, unit: "HOURS") {
+//                        def qg = waitForQualityGate()
+//                        if (qg.status != "OK") {
+//                            error("Pipeline aborted due to quality gate failure: ${qg.status}")
+//                        }
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        }
+//
+//        stage("Development deploy approval") {
+//
+//            steps {
+//
+//                script {
+//
+//                    if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+//
+//                        timeout(time: 3, unit: "MINUTES") {
+//                            input message: "Approve deployment?"
+//                        }
+//
+//                        timeout(time: 2, unit: "MINUTES") {
+//                            echo "build  ${env.BUILD_NUMBER} versions..."
+//                        }
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        }
+//
+//        stage("QA release approval and publish artifact") {
+//
+//            when {
+//                branch "master"
+//            }
+//
+//            steps {
+//
+//                script {
+//
+//                    if (currentBuild.result == null || currentBuild.result == "SUCCESS") {
+//                        timeout(time: 3, unit: "MINUTES") {
+//                            //input message:"Approve deployment?", submitter: "it-ops"
+//                            input message: "Approve deployment to QA?"
+//                        }
+//                    }
+//
+//                }
+//
+//            }
+//
+//        }
+//
     }
 
     post {
