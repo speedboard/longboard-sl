@@ -30,6 +30,17 @@ pipeline {
 
     stages {
 
+        stage("Checkout") {
+            agent {
+                docker {
+                    image("node:alpine")
+                }
+            }
+            steps {
+                checkout(scm)
+            }
+        }
+
         stage("Install dependencies") {
             agent {
                 docker {
