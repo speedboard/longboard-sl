@@ -114,6 +114,7 @@ pipeline {
             agent {
                 docker {
                     image "swids/sonar-scanner:2.8"
+                    args "-v ${env.WORKSPACE}:${env.WORKSPACE}"
                 }
             }
 
