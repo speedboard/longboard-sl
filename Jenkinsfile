@@ -38,7 +38,7 @@ pipeline {
             }
             steps {
 
-                sh "npm -i"
+                sh "npm install"
                 sh "npm test"
 
                 stash includes: 'node_modules', name: 'node_modules'
