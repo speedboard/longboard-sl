@@ -129,7 +129,7 @@ pipeline {
 
             agent {
                 docker {
-                    image "ismaelqueiroz/sonar-scanner"
+                    image "sonar-scanner:1"
                     args "--link=sonarqube -e SONAR_SCANNER_VERSION=${env.SONAR_SCANNER_VERSION}"
                 }
             }
