@@ -129,7 +129,7 @@ pipeline {
 
             agent {
                 docker {
-                    image "sonar-scanner:1"
+                    image "sonar-scanner:2"
                     args "--user root --link=sonarqube"
                 }
             }
