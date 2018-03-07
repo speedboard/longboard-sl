@@ -137,7 +137,7 @@ pipeline {
             steps {
 
                 withSonarQubeEnv("SonarQube") {
-                    sh("/sonarscanner/default/bin/sonar-scanner -Dsonar.login=faac15ae308d697ee662184a31efee3fa0006662 " +
+                    sh("/sonarscanner/default/bin/sonar-scanner -Dsonar.login=${env.SONAR_AUTH_TOKEN} " +
                         "-Dsonar.host.url=${env.SONAR_HOST_URL}:9000 " +
                         "-Dsonar.branch=${env.BRANCH_NAME}")
                 }
