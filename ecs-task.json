@@ -1,11 +1,11 @@
 {
     "containerDefinitions": [
         {
-            "name": "longboard",
+            "name": "ezehr",
             "links": [
                 "db"
             ],
-            "image": "775455448733.dkr.ecr.us-west-2.amazonaws.com/longboard:latest",
+            "image": "[id].dkr.ecr.us-west-2.amazonaws.com/ezehr:latest",
             "memory": 256,
             "cpu": 10,
             "essential": true,
@@ -34,5 +34,5 @@
     "memory": "256",
     "cpu": "1024",
     "placementConstraints": [],
-    "family": "speedboard"
+    "family": "ezvida"
 }
