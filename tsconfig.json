@@ -32,8 +32,7 @@
         "./**/*.ts"
     ],
     "exclude": [
-        "setup",
-        "node_modules"
+        "node_modules/"
     ],
     "files": [
         "node_modules/moment/moment.d.ts"

@@ -1,0 +1,38 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "ezehr",
+            "links": [
+                "db"
+            ],
+            "image": "[id].dkr.ecr.us-west-2.amazonaws.com/ezehr:latest",
+            "memory": 256,
+            "cpu": 10,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "hostPort": 80
+                }
+            ]
+        },
+        {
+            "name": "db",
+            "image": "mongo:jessie",
+            "cpu": 10,
+            "memory": 256,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 27017,
+                    "hostPort": 27017
+                }
+            ]
+        }
+    ],
+    "volumes": [],
+    "memory": "256",
+    "cpu": "1024",
+    "placementConstraints": [],
+    "family": "ezvida"
+}

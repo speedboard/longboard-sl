@@ -1,13 +1,12 @@
 import {readFileSync} from 'fs';
-import {isNullOrUndefined} from 'util';
 
 let keys: any;
 
 module.exports = function () {
     return (options: { privateKey: string, publicKey: string }) => {
         return keys = {
-            privateKey: readFileSync(isNullOrUndefined(options) ? 'longboard-private.pem' : options.privateKey),
-            publicKey: readFileSync(isNullOrUndefined(options) ? 'longboard-public.pem' : options.publicKey)
+            privateKey: readFileSync(options.privateKey),
+            publicKey: readFileSync(options.publicKey)
         };
     };
 };

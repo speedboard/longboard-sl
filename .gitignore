@@ -78,6 +78,8 @@ common/
 *.pem
 *.key
 *.crt
+!longboard-private.pem
+!longboard-public.pem
 
 # environment configuration files
 config/*.json

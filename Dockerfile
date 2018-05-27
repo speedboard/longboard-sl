@@ -1,10 +1,18 @@
 FROM node:alpine
 
-ENV DATABASE_URL "mongodb://172.17.0.1:27017/speedboard"
+ENV DATABASE_URL "mongodb://db:27017/speedboard"
 ENV DATABASE_NAME "speedboard"
 
 # install openssl
-RUN apk add --update --no-cache openssl
+RUN apk update
+RUN apk upgrade
+RUN apk add --update git
+RUN apk add --update zip
+RUN apk add --update unzip
+RUN apk add --update openssl
+
+# Default to UTF-8 file.encoding
+ENV LANG C.UTF-8
 
 # create app directory in container
 RUN mkdir -p /app
@@ -33,4 +41,3 @@ EXPOSE 8000
 
 # cmd to start service
 CMD [ "pm2", "--no-daemon", "start", "ecosystem.json" ]
-#CMD [ "npm", "start" ]
