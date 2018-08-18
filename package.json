@@ -111,7 +111,7 @@
         "@types/source-map": "^0.5.7",
         "@types/supertest": "^2.0.4",
         "@types/uuid": "^3.4.3",
-        "@types/winston": "2.3.9",
+        "@types/winston": "2.4.4",
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.0",
         "babel-plugin-add-module-exports": "^0.2.1",
