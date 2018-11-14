@@ -60,7 +60,7 @@
         "express": "^4.16.2",
         "express-jwt": "5.3.0",
         "js-base64": "2.4.4",
-        "jsonwebtoken": "^8.1.0",
+        "jsonwebtoken": "^8.4.0",
         "kraken-format-path": "1.0.0",
         "kraken-js": "2.2.0",
         "lodash": "4.17.5",
