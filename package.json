@@ -95,7 +95,7 @@
         "@types/express-winston": "^2.4.0",
         "@types/grunt": "0.4.22",
         "@types/http-status": "^0.2.30",
-        "@types/jsonwebtoken": "7.2.5",
+        "@types/jsonwebtoken": "8.3.2",
         "@types/lodash": "4.14.104",
         "@types/mocha": "^2.2.46",
         "@types/moment": "^2.13.0",
