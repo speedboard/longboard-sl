@@ -51,7 +51,7 @@
     "homepage": "https://speedboard.github.io",
     "dependencies": {
         "acl": "0.4.11",
-        "body-parser": "1.18.3",
+        "body-parser": "1.19.0",
         "bundalo": "1.0.0",
         "construx": "1.0.1",
         "construx-copier": "1.0.0",
