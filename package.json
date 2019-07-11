@@ -63,7 +63,7 @@
         "jsonwebtoken": "^8.1.0",
         "kraken-format-path": "1.0.0",
         "kraken-js": "2.2.0",
-        "lodash": "4.17.5",
+        "lodash": "4.17.12",
         "moment": "^2.19.4",
         "mongodb": "^3.0.1",
         "oauth2orize": "^1.11.0",
