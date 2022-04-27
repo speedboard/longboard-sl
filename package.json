@@ -62,7 +62,7 @@
         "js-base64": "2.4.4",
         "jsonwebtoken": "^8.1.0",
         "kraken-format-path": "1.0.0",
-        "kraken-js": "2.2.0",
+        "kraken-js": "2.4.0",
         "lodash": "4.17.5",
         "moment": "^2.19.4",
         "mongodb": "^3.0.1",
